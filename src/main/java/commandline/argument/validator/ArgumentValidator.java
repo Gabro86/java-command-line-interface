@@ -8,11 +8,10 @@ public abstract class ArgumentValidator<T> {
 		super();
 	}
 
-	public abstract void validate(T value);
-
-	public abstract Class<T> getSupportedClass();
-
 	public boolean isCompatible(Class<?> clazz) {
 		return getSupportedClass().isAssignableFrom(clazz);
 	}
+
+	public abstract void validate(T value);
+	public abstract Class<T> getSupportedClass();
 }

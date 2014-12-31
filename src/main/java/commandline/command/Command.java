@@ -1,6 +1,7 @@
 package commandline.command;
 
 import commandline.exception.ArgumentNullException;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Command implements Comparable<Command> {
 	private final String name;
@@ -27,7 +28,7 @@ public abstract class Command implements Comparable<Command> {
 	}
 
 	@Override
-	public int compareTo(Command command) {
+	public int compareTo(@NotNull Command command) {
 		return getName().compareTo(command.getName());
 	}
 

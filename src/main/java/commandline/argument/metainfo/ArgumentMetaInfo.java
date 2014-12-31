@@ -2,8 +2,19 @@ package commandline.argument.metainfo;
 
 import commandline.argument.validator.ArgumentValidator;
 import commandline.command.CommandLineException;
-import commandline.language.parser.argument.*;
 import commandline.exception.ArgumentNullException;
+import commandline.language.parser.argument.ArgumentParser;
+import commandline.language.parser.argument.BooleanArgumentParser;
+import commandline.language.parser.argument.CharacterArgumentParser;
+import commandline.language.parser.argument.DoubleArgumentParser;
+import commandline.language.parser.argument.FileArgumentParser;
+import commandline.language.parser.argument.FloatArgumentParser;
+import commandline.language.parser.argument.IntegerArgumentParser;
+import commandline.language.parser.argument.LongArgumentParser;
+import commandline.language.parser.argument.MockArgumentParser;
+import commandline.language.parser.argument.ShortArgumentParser;
+import commandline.language.parser.argument.StringArgumentParser;
+import commandline.language.parser.argument.UrlArgumentParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,13 +78,13 @@ public class ArgumentMetaInfo implements Comparable<ArgumentMetaInfo> {
 			throw new ArgumentNullException();
 		}
 		validator = createValidator(validatorClass);
-		if (! validator.isCompatible(valueType)) {
+		if (!validator.isCompatible(valueType)) {
 			throw new CommandLineException(String.format("The meta info could not been created, " +
 					"because the passed validator can only validate values of the type \"%s\" and does not validate instances of " +
 					"the passed argument type \"%s\"", validator.getSupportedClass().getSimpleName(), valueType.getSimpleName()));
 		}
 		parser = createParser(parserClass);
-		if (! parser.isCompatible(valueType)) {
+		if (!parser.isCompatible(valueType)) {
 			throw new CommandLineException(String.format("The meta info could not been created, " +
 					"because the passed parser creates instances from the type \"%s\" that are not compatible with the argument " +
 					"type \"%s\"", parser.getValueType().getSimpleName(), valueType.getSimpleName()));
@@ -114,8 +125,11 @@ public class ArgumentMetaInfo implements Comparable<ArgumentMetaInfo> {
 
 	private static Class<? extends ArgumentParser<?>> getCompatibleParser(CommandArgument metaInfo, Class<?> valueType) {
 		Class<? extends ArgumentParser<?>> parser;
-		parser = metaInfo.parser();
 
+		if (metaInfo == null) {
+			throw new ArgumentNullException();
+		}
+		parser = metaInfo.parser();
 		if (parser.equals(MockArgumentParser.class)) {
 			parser = findCompatibleParser(valueType);
 			if (parser == null) {
@@ -237,28 +251,28 @@ public class ArgumentMetaInfo implements Comparable<ArgumentMetaInfo> {
 		if (this.obligatory != that.obligatory) {
 			return false;
 		}
-		if (this.defaultValue != null ? ! this.defaultValue.equals(that.defaultValue) : that.defaultValue != null) {
+		if (this.defaultValue != null ? !this.defaultValue.equals(that.defaultValue) : that.defaultValue != null) {
 			return false;
 		}
-		if (! this.description.equals(that.description)) {
+		if (!this.description.equals(that.description)) {
 			return false;
 		}
-		if (! Arrays.equals(this.examples, that.examples)) {
+		if (!Arrays.equals(this.examples, that.examples)) {
 			return false;
 		}
-		if (! this.longName.equals(that.longName)) {
+		if (!this.longName.equals(that.longName)) {
 			return false;
 		}
-		if (! this.parser.equals(that.parser)) {
+		if (!this.parser.equals(that.parser)) {
 			return false;
 		}
-		if (! this.shortName.equals(that.shortName)) {
+		if (!this.shortName.equals(that.shortName)) {
 			return false;
 		}
-		if (! this.validator.equals(that.validator)) {
+		if (!this.validator.equals(that.validator)) {
 			return false;
 		}
-		if (! this.valueType.equals(that.valueType)) {
+		if (!this.valueType.equals(that.valueType)) {
 			return false;
 		}
 
@@ -313,7 +327,7 @@ public class ArgumentMetaInfo implements Comparable<ArgumentMetaInfo> {
 			defaultValue = null;
 		}
 		defaultValueNull = annotation.defaultToNull();
-		if (defaultValue != null && ! defaultValue.isEmpty() && defaultValueNull) {
+		if (defaultValue != null && !defaultValue.isEmpty() && defaultValueNull) {
 			throw new CommandLineException("The default value could not been retrieved, because the passed annotation " +
 					"contains a default value and is set to use null as default value at the same time.");
 		}

@@ -14,10 +14,10 @@ public class FileArgumentValidator extends ArgumentValidator<File> {
 		if (value == null) {
 			throw new ValidationException("The file failed, because the passed file is null.");
 		}
-		if (! value.exists()) {
+		if (!value.exists()) {
 			throw new ValidationException("The file failed, because the passed file does not exist.");
 		}
-		if (! value.isFile()) {
+		if (!value.isFile()) {
 			throw new ValidationException("The file failed, because the passed file does not point to a file.");
 		}
 	}
