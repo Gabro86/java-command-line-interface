@@ -5,7 +5,6 @@
 	<groupId>command-line-interface</groupId>
 	<artifactId>command-line-interface</artifactId>
 	<version>1.0.12-SNAPSHOT</version>
-	<name>command-line-interface</name>
 
 	<properties>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -40,7 +39,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>commandline-${project.version}</finalName>
+		<finalName>command-line-interface-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
