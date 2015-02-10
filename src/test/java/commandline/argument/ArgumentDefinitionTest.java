@@ -2,8 +2,8 @@ package commandline.argument;
 
 import commandline.annotation.CliArgument;
 import commandline.annotation.MockCliArgument;
-import commandline.argument.validator.MockInvalidArgumentValidator;
 import commandline.argument.validator.DefaultArgumentValidator;
+import commandline.argument.validator.MockInvalidArgumentValidator;
 import commandline.command.CommandLineException;
 import commandline.command.MockExecutableCommand;
 import commandline.exception.ArgumentNullException;

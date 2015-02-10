@@ -39,7 +39,7 @@ public class MockExecutableCommand extends ExecutableCommand {
 	@CliArgument(shortName = ARGUMENT_TEST_SHORT_NAME, longName = ARGUMENT_TEST_LONG_NAME, validator = DefaultArgumentValidator.class,
 			parser = StringArgumentParser.class, obligatory = ARGUMENT_TEST_OBLIGATORY,
 			examples = {ARGUMENT_TEST_EXAMPLE}, description = ARGUMENT_TEST_DESCRIPTION)
-	public void setTestField(String textValue) {
+	public void setTestField(@NotNull String textValue) {
 		if (textValue == null) {
 			throw new ArgumentNullException();
 		}

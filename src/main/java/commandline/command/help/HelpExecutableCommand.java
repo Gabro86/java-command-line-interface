@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public class HelpExecutableCommand extends ExecutableCommand {
 	@NotNull
 	private final CommandDefinitionList commandDefinitions;
+	@Nullable
 	private String askedCommandName;
 
 	public HelpExecutableCommand(@NotNull CommandDefinitionList commandDefinitions) {
@@ -106,6 +107,6 @@ public class HelpExecutableCommand extends ExecutableCommand {
 	}
 
 	public static String getCommandName() {
-		return "help";
+		return HelpCommandDefinition.COMMAND_NAME;
 	}
 }

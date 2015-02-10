@@ -24,7 +24,7 @@ public class CommandExecutor {
 		return this.commandLineLanguage;
 	}
 
-	public Command execute(@NotNull String[] cliArguments, CommandDefinitionList commandDefinitions) {
+	public Command execute(@NotNull String[] cliArguments, @NotNull CommandDefinitionList commandDefinitions) {
 		Command command;
 		CommandParser commandParser;
 
@@ -42,7 +42,7 @@ public class CommandExecutor {
 		return command;
 	}
 
-	public Command execute(@NotNull String[] cliArguments, List<ExecutableCommand> commands) {
+	public Command execute(@NotNull String[] cliArguments, @NotNull List<ExecutableCommand> commands) {
 		CommandDefinition definition;
 		CommandDefinitionList definitions;
 		CommandDefinitionReader reader;

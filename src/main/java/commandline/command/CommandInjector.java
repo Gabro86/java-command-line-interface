@@ -5,6 +5,7 @@ import commandline.argument.Argument;
 import commandline.argument.ArgumentDefinition;
 import commandline.argument.ArgumentList;
 import commandline.exception.ArgumentNullException;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,7 +19,7 @@ public class CommandInjector {
 		super();
 	}
 
-	public void inject(Command sourceCommand, Object destinationObject) {
+	public void inject(@NotNull Command sourceCommand, @NotNull Object destinationObject) {
 		if (sourceCommand == null) {
 			throw new ArgumentNullException();
 		}
@@ -28,7 +29,7 @@ public class CommandInjector {
 		inject(sourceCommand.getArgumentList(), destinationObject);
 	}
 
-	public void inject(ArgumentList arguments, Object destinationObject) {
+	public void inject(@NotNull ArgumentList arguments, @NotNull Object destinationObject) {
 		HashMap<String, Method> methodMap;
 		HashMap<String, ArgumentDefinition> methodDefinitionMap;
 		Method setterMethod;

@@ -130,6 +130,7 @@ public class CommandDefinitionReader {
 		return definition;
 	}
 
+	@NotNull
 	Class<?> wrapPrimitiveClass(Class<?> type) {
 		if (type == null) {
 			throw new ArgumentNullException();

@@ -125,6 +125,7 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 		getArguments().addAll(arguments);
 	}
 
+	@NotNull
 	@Override
 	public Iterator<ArgumentDefinition> iterator() {
 		return getArguments().iterator();
@@ -133,11 +134,6 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 	@Override
 	public int compareTo(@NotNull CommandDefinition command) {
 		return getName().compareTo(command.getName());
-	}
-
-	@NotNull
-	public static CommandDefinition createMock() {
-		return new CommandDefinition("test-command", "This is a description.", new MockExecutableCommand(), false);
 	}
 
 	@Override
@@ -189,5 +185,10 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 		result = 31 * result + (this.argumentInjectionEnabled ? 1 : 0);
 		result = 31 * result + this.arguments.hashCode();
 		return result;
+	}
+
+	@NotNull
+	public static CommandDefinition createMock() {
+		return new CommandDefinition("test-command", "This is a description.", new MockExecutableCommand(), false);
 	}
 }

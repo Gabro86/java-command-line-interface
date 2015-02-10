@@ -28,6 +28,7 @@ public class CommandDefinitionList {
 		return Collections.unmodifiableMap(this.commands);
 	}
 
+	@NotNull
 	public Collection<CommandDefinition> getCollection() {
 		return Collections.unmodifiableCollection(getCommands().values());
 	}

@@ -281,7 +281,7 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 
 	@NotNull
 	static Class<? extends ArgumentParser<?>> processParserClass(@NotNull Class<?> valueClass,
-			Class<? extends ArgumentParser<?>> parserClass) {
+			@Nullable Class<? extends ArgumentParser<?>> parserClass) {
 		Class<? extends ArgumentParser<?>> compatibleParserClass;
 		String message;
 		ArgumentParser<?> parser;

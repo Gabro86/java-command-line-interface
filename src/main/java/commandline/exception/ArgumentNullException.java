@@ -1,5 +1,7 @@
 package commandline.exception;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ArgumentNullException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
@@ -7,19 +9,20 @@ public class ArgumentNullException extends RuntimeException {
 		super("Transmitted Value should not be NULL.");
 	}
 
-	public ArgumentNullException(String message) {
+	public ArgumentNullException(@NotNull String message) {
 		super(message);
 	}
 
-	public ArgumentNullException(String message, Throwable cause) {
+	public ArgumentNullException(@NotNull String message, @NotNull Throwable cause) {
 		super(message, cause);
 	}
 
-	public ArgumentNullException(Throwable cause) {
+	public ArgumentNullException(@NotNull Throwable cause) {
 		super(cause);
 	}
 
-	public ArgumentNullException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public ArgumentNullException(@NotNull String message, @NotNull Throwable cause, boolean enableSuppression,
+			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 }

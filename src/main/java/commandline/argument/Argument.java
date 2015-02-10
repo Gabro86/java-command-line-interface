@@ -123,7 +123,7 @@ public class Argument<ValueType> {
 	}
 
 	@SuppressWarnings("unchecked")
-	static void validateValue(ArgumentDefinition definition, Object value) {
+	static void validateValue(@NotNull ArgumentDefinition definition, @Nullable Object value) {
 		Class<?> valueClass;
 		Class<?> valueClassFromDefinition;
 		ArgumentValidator validator;
@@ -189,6 +189,7 @@ public class Argument<ValueType> {
 		return argument;
 	}
 
+	@NotNull
 	public static Argument<String> createMock() {
 		Argument<String> argument;
 		ArgumentDefinition definition;
