@@ -1,82 +1,72 @@
 package commandline.command;
 
-import commandline.argument.ArgumentList;
-import commandline.argument.metainfo.ArgumentMetaInfo;
-import commandline.argument.metainfo.ArgumentMetaInfoExtractor;
-import commandline.language.CommandLineLanguage;
-import commandline.language.parser.argument.ArgumentsParser;
-import commandline.language.syntax.validator.command.CommandSyntaxValidator;
 import commandline.exception.ArgumentNullException;
+import commandline.language.CommandLineLanguage;
+import commandline.language.parser.CommandParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class CommandExecutor {
 	@NotNull
-	private final CommandList commands;
-	@NotNull
-	private final CommandLineLanguage language;
+	private final CommandLineLanguage commandLineLanguage;
 
-	public CommandExecutor(@NotNull CommandList commands, @NotNull CommandLineLanguage language) {
+	public CommandExecutor(@NotNull CommandLineLanguage commandLineLanguage) {
 		super();
-		if (commands == null) {
+		if (commandLineLanguage == null) {
 			throw new ArgumentNullException();
 		}
-		if (language == null) {
-			throw new ArgumentNullException();
-		}
-		this.commands = commands;
-		this.language = language;
+		this.commandLineLanguage = commandLineLanguage;
 	}
 
 	@NotNull
-	public CommandList getCommands() {
-		return this.commands;
+	public CommandLineLanguage getCommandLineLanguage() {
+		return this.commandLineLanguage;
 	}
 
-	@NotNull
-	public CommandLineLanguage getLanguage() {
-		return this.language;
-	}
-
-	public void execute(@NotNull String[] cliArguments) {
+	public Command execute(@NotNull String[] cliArguments, CommandDefinitionList commandDefinitions) {
 		Command command;
-		String name;
-		ArgumentList arguments;
-		List<ArgumentMetaInfo> metaInfos;
-		CommandSyntaxValidator syntaxValidator;
-		ArgumentsParser parser;
-		CommandInjector injector;
-		ArgumentMetaInfoExtractor extractor;
+		CommandParser commandParser;
 
 		if (cliArguments == null) {
 			throw new ArgumentNullException();
 		}
-		if (cliArguments.length == 0) {
-			throw new CommandLineException("The command could not been executed, because no command name was passed.");
+		if (commandDefinitions == null) {
+			throw new ArgumentNullException();
 		}
 
-		syntaxValidator = getLanguage().getSyntaxValidator();
-		syntaxValidator.validate(cliArguments);
-
-		name = cliArguments[0];
-		if (name == null || name.isEmpty()) {
-			throw new CommandLineException("The command could not been executed, because no command name was passed.");
-		}
-		command = getCommands().get(name);
-		if (command == null) {
-			throw new CommandLineException(
-					"The command \"" + name + "\" could not been executed, because it's not defined in the command list.");
-		}
-
-		extractor = new ArgumentMetaInfoExtractor();
-		metaInfos = extractor.extract(command.getClass());
-		parser = getLanguage().getArgumentsParser();
-		arguments = parser.parse(cliArguments, metaInfos);
-
-		injector = new CommandInjector();
-		injector.inject(arguments, command);
-
+		commandParser = new CommandParser(getCommandLineLanguage(), commandDefinitions);
+		command = commandParser.parse(cliArguments);
 		command.execute();
+
+		return command;
+	}
+
+	public Command execute(@NotNull String[] cliArguments, List<ExecutableCommand> commands) {
+		CommandDefinition definition;
+		CommandDefinitionList definitions;
+		CommandDefinitionReader reader;
+		Command command;
+		CommandParser commandParser;
+
+		if (cliArguments == null) {
+			throw new ArgumentNullException();
+		}
+		if (commands == null) {
+			throw new ArgumentNullException();
+		}
+
+		reader = new CommandDefinitionReader();
+		definitions = new CommandDefinitionList();
+		for (ExecutableCommand executableCommand : commands) {
+			definition = reader.readCommandDefinition(executableCommand.getClass(), executableCommand);
+			definitions.add(definition);
+		}
+
+		commandParser = new CommandParser(getCommandLineLanguage(), definitions);
+		command = commandParser.parse(cliArguments);
+		command.execute();
+
+		return command;
 	}
 }

@@ -1,57 +1,45 @@
 package commandline.argument;
 
-import commandline.argument.metainfo.ArgumentMetaInfo;
 import commandline.argument.validator.ArgumentValidator;
+import commandline.argument.validator.DefaultArgumentValidator;
 import commandline.command.CommandLineException;
-import commandline.language.parser.argument.ArgumentParser;
 import commandline.exception.ArgumentNullException;
+import commandline.language.parser.ArgumentParser;
+import commandline.language.parser.specific.StringArgumentParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * User: gno Date: 21.06.13 Time: 15:12
  */
-public class Argument<T> {
+public class Argument<ValueType> {
 	@NotNull
-	private final ArgumentMetaInfo metaInfo;
+	private final ArgumentDefinition definition;
 	@Nullable
-	private final T value;
+	private final ValueType value;
+
+	public Argument(@NotNull String longName, @NotNull String shortName, @NotNull Class<?> valueClass,
+			@NotNull Class<? extends ArgumentParser<?>> parserClass, @NotNull Class<? extends ArgumentValidator<?>> validatorClass,
+			boolean obligatory, @Nullable String defaultValue, @NotNull String description, @NotNull String[] examples,
+			@Nullable ValueType value) {
+		this(new ArgumentDefinition(longName, shortName, valueClass, parserClass, validatorClass, obligatory, defaultValue,
+				description, examples), value);
+	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public Argument(@NotNull ArgumentMetaInfo metaInfo, @Nullable T value) {
+	public Argument(@NotNull ArgumentDefinition definition, @Nullable ValueType value) {
 		super();
-
-		Class<?> valueClass;
-		Class<?> typeClass;
-		ArgumentValidator validator;
-
-		if (metaInfo == null) {
+		if (definition == null) {
 			throw new ArgumentNullException();
 		}
-		//value can be null. A null value means that the user did not pass the argument to the cli. There is no other way for the
-		//user to pass a null as value for an argument.
-		//Value is not directly the cli value that was passed by the user. Instead it's the value that was parsed from the value the
-		//user passed.
-		if (value != null) {
-			valueClass = value.getClass();
-			typeClass = metaInfo.getValueType();
-			if (!typeClass.isAssignableFrom(valueClass)) {
-				throw new CommandLineException("The validation of the argument \"" + metaInfo.getLongName() + "\" failed, " +
-						"because the value with the type \"" + value.getClass().getSimpleName() + "\" is not an instance of the " +
-						"type \"" + typeClass.getSimpleName() + "\" defined in the meta info.");
-			}
-		}
-		//The value have to be validated with the passed validator, but since it's from the type defined in the passed
-		//ArgumentMetaInfo it does not have to be parsed.
-		validator = ArgumentMetaInfo.createValidator(metaInfo.getValidator());
-		validator.validate(value);
-		this.metaInfo = metaInfo;
+		this.definition = definition;
+		validateValue(definition, value);
 		this.value = value;
 	}
 
 	@NotNull
-	public ArgumentMetaInfo getMetaInfo() {
-		return this.metaInfo;
+	public ArgumentDefinition getDefinition() {
+		return this.definition;
 	}
 
 	@Nullable
@@ -61,71 +49,153 @@ public class Argument<T> {
 
 	@NotNull
 	public String getLongName() {
-		return getMetaInfo().getLongName();
+		return getDefinition().getLongName();
 	}
 
 	@NotNull
 	public String getShortName() {
-		return getMetaInfo().getShortName();
+		return getDefinition().getShortName();
 	}
 
 	@NotNull
-	public Class<?> getType() {
-		return getMetaInfo().getValueType();
+	public Class<?> getValueClass() {
+		return getDefinition().getValueClass();
 	}
 
 	@NotNull
 	public Class<? extends ArgumentParser<?>> getParser() {
-		return getMetaInfo().getParser();
+		return getDefinition().getParserClass();
 	}
 
 	public boolean isObligatory() {
-		return getMetaInfo().isObligatory();
+		return getDefinition().isObligatory();
 	}
 
 	@Nullable
 	public String getDefaultValue() {
-		return getMetaInfo().getDefaultValue();
+		return getDefinition().getDefaultValue();
 	}
 
 	@NotNull
 	public String getDescription() {
-		return getMetaInfo().getDescription();
+		return getDefinition().getDescription();
 	}
 
 	@NotNull
 	public String[] getExamples() {
-		return getMetaInfo().getExamples();
+		return getDefinition().getExamples();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof Argument)) {
+			return false;
+		}
+
+		Argument argument = (Argument) o;
+
+		if (!this.definition.equals(argument.definition)) {
+			return false;
+		}
+		if (this.value != null ? !this.value.equals(argument.value) : argument.value != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = this.definition.hashCode();
+		result = 31 * result + (this.value != null ? this.value.hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "Argument{" +
+				"definition=" + this.definition +
+				", value=" + this.value +
+				'}';
+	}
+
+	@SuppressWarnings("unchecked")
+	static void validateValue(ArgumentDefinition definition, Object value) {
+		Class<?> valueClass;
+		Class<?> valueClassFromDefinition;
+		ArgumentValidator validator;
+
+		/*
+		 * Value can be null. A null value means that the user did not pass the argument to the cli. There is no other way for the
+		 * user to pass a null as value for an argument.
+		 *
+		 * Value is not the cli value that was passed by the user. Instead it's the value that was parsed from the value the user
+		 * passed.
+		 */
+		if (value != null) {
+			//Tests if the value is from a class that is defined in the argument definition.
+			valueClass = value.getClass();
+			valueClassFromDefinition = definition.getValueClass();
+			if (!valueClassFromDefinition.isAssignableFrom(valueClass)) {
+				throw new CommandLineException("The validation of the argument \"" + definition.getLongName() + "\" failed, " +
+						"because the value with the class \"" + valueClass.getSimpleName() + "\" is not an instance of the " +
+						"class \"" + valueClassFromDefinition.getSimpleName() + "\" defined in the argument definition.");
+			}
+		}
+		try {
+			validator = definition.getValidatorClass().newInstance();
+		} catch (IllegalAccessException | InstantiationException e) {
+			throw new CommandLineException(e.getMessage(), e);
+		}
+		validator.validate(value);
 	}
 
 	@NotNull
 	@SuppressWarnings("unchecked")
-	public static <T> Argument<T> parse(@Nullable ArgumentMetaInfo metaInfo, String value) {
+	public static <T> Argument<T> parse(@Nullable ArgumentDefinition definition, @Nullable String value) {
 		ArgumentParser<?> parser;
 		Argument<T> argument;
 		Object parsedValue;
 		String valueToParse;
 
-		if (metaInfo == null) {
+		if (definition == null) {
 			throw new ArgumentNullException();
 		}
 		valueToParse = value;
 		// A null value indicates that the user did not pass the argument to the cli, because there is no other way a user can pass a
 		// null value to an argument. In this case the default value will be used if the argument is optional.
 		if (valueToParse == null) {
-			if (metaInfo.isObligatory()) {
-				throw new CommandLineException("The parsing of the argument \"" + metaInfo.getLongName() + "\" failed, " +
-						"because the passed obligatory value is null.");
+			if (definition.isObligatory()) {
+				throw new CommandLineException("The parsing of the argument \"" + definition.getLongName() + "\" failed, " +
+						"because the passed argument is obligatory, but null was passed.");
 			}
-			valueToParse = metaInfo.getDefaultValue();
+			valueToParse = definition.getDefaultValue();
 		}
 		if (valueToParse == null) {
 			parsedValue = null;
 		} else {
-			parser = ArgumentMetaInfo.createParser(metaInfo.getParser());
+			try {
+				parser = definition.getParserClass().newInstance();
+			} catch (IllegalAccessException | InstantiationException e) {
+				throw new CommandLineException(e.getMessage(), e);
+			}
 			parsedValue = parser.parse(valueToParse);
 		}
-		argument = (Argument<T>) new Argument<>(metaInfo, parsedValue);
+		argument = (Argument<T>) new Argument<>(definition, parsedValue);
+
+		return argument;
+	}
+
+	public static Argument<String> createMock() {
+		Argument<String> argument;
+		ArgumentDefinition definition;
+
+		definition = new ArgumentDefinition("longName", "s", String.class, StringArgumentParser.class, DefaultArgumentValidator.class,
+				true, null, "description", new String[] {"example"});
+		argument = new Argument<>(definition, "test-value");
 
 		return argument;
 	}

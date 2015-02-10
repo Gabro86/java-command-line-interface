@@ -1,8 +1,8 @@
 package commandline.language;
 
-import commandline.language.parser.argument.ArgumentsParser;
-import commandline.language.syntax.validator.command.CommandSyntaxValidator;
 import commandline.exception.ArgumentNullException;
+import commandline.language.parser.GenericCommandParser;
+import commandline.language.syntax.CommandSyntaxValidator;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,29 +10,29 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CommandLineLanguage {
 	@NotNull
-	private final ArgumentsParser argumentsParser;
-	@NotNull
 	private final CommandSyntaxValidator syntaxValidator;
+	@NotNull
+	private final GenericCommandParser genericCommandParser;
 
-	public CommandLineLanguage(@NotNull ArgumentsParser argumentsParser, @NotNull CommandSyntaxValidator syntaxValidator) {
+	public CommandLineLanguage(@NotNull CommandSyntaxValidator syntaxValidator, @NotNull GenericCommandParser genericCommandParser) {
 		super();
-		if (argumentsParser == null) {
-			throw new ArgumentNullException();
-		}
 		if (syntaxValidator == null) {
 			throw new ArgumentNullException();
 		}
-		this.argumentsParser = argumentsParser;
+		if (genericCommandParser == null) {
+			throw new ArgumentNullException();
+		}
 		this.syntaxValidator = syntaxValidator;
-	}
-
-	@NotNull
-	public ArgumentsParser getArgumentsParser() {
-		return this.argumentsParser;
+		this.genericCommandParser = genericCommandParser;
 	}
 
 	@NotNull
 	public CommandSyntaxValidator getSyntaxValidator() {
 		return this.syntaxValidator;
+	}
+
+	@NotNull
+	public GenericCommandParser getGenericCommandParser() {
+		return this.genericCommandParser;
 	}
 }

@@ -1,11 +1,9 @@
 package commandline.argument;
 
-import commandline.argument.metainfo.ArgumentMetaInfo;
+import commandline.argument.validator.DefaultArgumentValidator;
 import commandline.command.CommandLineException;
-import commandline.language.parser.argument.IntegerArgumentParser;
-import commandline.language.parser.argument.StringArgumentParser;
-import commandline.argument.validator.IntegerArgumentValidator;
-import commandline.argument.validator.StringArgumentValidator;
+import commandline.language.parser.specific.IntegerArgumentParser;
+import commandline.language.parser.specific.StringArgumentParser;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
@@ -21,64 +19,62 @@ public class ArgumentTest {
 	@SuppressWarnings("ResultOfObjectAllocationIgnored")
 	@Test
 	public void testConstructor() {
-		ArgumentMetaInfo info;
+		ArgumentDefinition definition;
 
-		info = new ArgumentMetaInfo("longName", "s", String.class, StringArgumentParser.class, StringArgumentValidator.class, true,
-				null, "description", new String[] {"example"});
-		new Argument<>(info, "value");
+		definition = new ArgumentDefinition("longName", "s", String.class, StringArgumentParser.class, DefaultArgumentValidator.class,
+				true, null, "description", new String[] {"example"});
+		new Argument<>(definition, "value");
 	}
 
 	@SuppressWarnings("ResultOfObjectAllocationIgnored")
 	@Test(expected = CommandLineException.class)
-	public void testConstructor_ValueTypeMismatch() {
-		ArgumentMetaInfo info;
+	public void testConstructor_ValueClassMismatch() {
+		ArgumentDefinition definition;
 
-		info = new ArgumentMetaInfo("longName", "s", String.class, StringArgumentParser.class, StringArgumentValidator.class, true,
-				null, "description", new String[] {"example"});
-		new Argument<>(info, new Object());
+		definition = new ArgumentDefinition("longName", "s", String.class, StringArgumentParser.class, DefaultArgumentValidator.class,
+				true, null, "description", new String[] {"example"});
+		new Argument<>(definition, new Object());
 	}
 
 	@Test
 	public void testParse() throws Exception {
-		ArgumentMetaInfo info;
+		ArgumentDefinition definition;
 		Argument<Integer> argument;
 
-		info = new ArgumentMetaInfo("longName", "s", Integer.class, IntegerArgumentParser.class, IntegerArgumentValidator.class, true,
-				null, "description", new String[] {"example"});
-		argument = Argument.parse(info, "100");
+		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+				DefaultArgumentValidator.class, true, null, "description", new String[] {"example"});
+		argument = Argument.parse(definition, "100");
 		assertEquals(100, (int) argument.getValue());
 	}
 
 	@Test
-	public void testParse_NullValue() throws Exception {
-		ArgumentMetaInfo info;
+	public void testParse_NullValue_NonObligatoryValue_NullDefaultValue() throws Exception {
+		ArgumentDefinition definition;
 		Argument<Object> argument;
 
-		info = new ArgumentMetaInfo("longName", "s", Integer.class, IntegerArgumentParser.class, IntegerArgumentValidator.class,
-				false,
-				null, "description", new String[] {"example"});
-		argument = Argument.parse(info, null);
+		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+				DefaultArgumentValidator.class, false, null, "description", new String[] {"example"});
+		argument = Argument.parse(definition, null);
 		assertEquals(null, argument.getValue());
 	}
 
 	@Test
-	public void testParse_NullValueWithNonNullDefaultValue() throws Exception {
-		ArgumentMetaInfo info;
+	public void testParse_NullValue_NonObligatory_NonNullDefaultValue() throws Exception {
+		ArgumentDefinition definition;
 		Argument<Integer> argument;
 
-		info = new ArgumentMetaInfo("longName", "s", Integer.class, IntegerArgumentParser.class, IntegerArgumentValidator.class,
-				false,
-				"100", "description", new String[] {"example"});
-		argument = Argument.parse(info, null);
+		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+				DefaultArgumentValidator.class, false, "100", "description", new String[] {"example"});
+		argument = Argument.parse(definition, null);
 		assertEquals(100, (int) argument.getValue());
 	}
 
 	@Test(expected = CommandLineException.class)
-	public void testParse_NullObligatoryValue() throws Exception {
-		ArgumentMetaInfo info;
+	public void testParse_NullValue_Obligatory_NullDefaultValue() throws Exception {
+		ArgumentDefinition definition;
 
-		info = new ArgumentMetaInfo("longName", "s", Integer.class, IntegerArgumentParser.class, IntegerArgumentValidator.class, true,
-				null, "description", new String[] {"example"});
-		Argument.parse(info, null);
+		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+				DefaultArgumentValidator.class, true, null, "description", new String[] {"example"});
+		Argument.parse(definition, null);
 	}
 }

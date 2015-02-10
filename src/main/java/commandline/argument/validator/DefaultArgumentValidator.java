@@ -17,9 +17,8 @@ public class DefaultArgumentValidator extends ArgumentValidator<Object> {
 		return Object.class;
 	}
 
-	@SuppressWarnings("RefusedBequest")
 	@Override
-	public boolean isCompatible(Class<?> clazz) {
+	public boolean isCompatible(@NotNull Class<?> clazz) {
 		return true;
 	}
 }

@@ -1,10 +1,9 @@
 package commandline.command;
 
+import commandline.annotation.CliArgument;
 import commandline.argument.Argument;
+import commandline.argument.ArgumentDefinition;
 import commandline.argument.ArgumentList;
-import commandline.argument.metainfo.ArgumentMetaInfo;
-import commandline.argument.metainfo.ArgumentMetaInfoExtractor;
-import commandline.argument.metainfo.CommandArgument;
 import commandline.exception.ArgumentNullException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,58 +18,85 @@ public class CommandInjector {
 		super();
 	}
 
-	public void inject(ArgumentList arguments, Object object) {
+	public void inject(Command sourceCommand, Object destinationObject) {
+		if (sourceCommand == null) {
+			throw new ArgumentNullException();
+		}
+		if (destinationObject == null) {
+			throw new ArgumentNullException();
+		}
+		inject(sourceCommand.getArgumentList(), destinationObject);
+	}
+
+	public void inject(ArgumentList arguments, Object destinationObject) {
 		HashMap<String, Method> methodMap;
+		HashMap<String, ArgumentDefinition> methodDefinitionMap;
+		Method setterMethod;
+		ArgumentDefinition extractedArgumentDefinition;
+		ArgumentDefinition passedArgumentDefinition;
+		CommandDefinitionReader definitionReader;
+		CliArgument definitionAnnotation;
 		String longName;
-		Method method;
-		Object value;
-		ArgumentMetaInfo extractedInfo;
-		ArgumentMetaInfo passedInfo;
-		ArgumentMetaInfoExtractor extractor;
 
 		if (arguments == null) {
 			throw new ArgumentNullException();
 		}
-		methodMap = createArgumentSettersMap(object.getClass());
-		extractor = new ArgumentMetaInfoExtractor();
-		for (Argument<?> argument : arguments.getArgumentList()) {
-			longName = argument.getLongName();
-			value = argument.getValue();
-			passedInfo = argument.getMetaInfo();
-			method = methodMap.get(longName);
-			//When no matching setter for the current argument was found it will be skipped. This happens when the argument list
-			//contains arguments for other commands
-			if (method == null) {
+		if (destinationObject == null) {
+			throw new ArgumentNullException();
+		}
+
+		/*
+		 * Creates a map of the argument names and the corresponding setters in the command class. This map is used to retrieve
+		 * the setter using the argument name.
+		 *
+		 * Creates a map of the argument names and the corresponding argument definitions extracted from the CliArgument annotation
+		 * above the setters of the class. This map is used to retrieve the argument definition of a specific method using the
+		 * argument name.
+		 *
+		 * This two maps are created to improve the performance of this method.
+		 */
+		methodMap = new HashMap<>();
+		methodDefinitionMap = new HashMap<>();
+		definitionReader = new CommandDefinitionReader();
+		for (Method m : destinationObject.getClass().getMethods()) {
+			definitionAnnotation = m.getAnnotation(CliArgument.class);
+			if (definitionAnnotation != null) {
+				longName = definitionAnnotation.longName();
+				methodMap.put(longName, m);
+
+				//Test implicitly that the method is a setter method.
+				extractedArgumentDefinition = definitionReader.readArgumentDefinition(m);
+				methodDefinitionMap.put(longName, extractedArgumentDefinition);
+			}
+		}
+
+		for (Argument argument : arguments.getCollection()) {
+			/*
+			 * Retrieves the setter of the command class that corresponds to the argument name. If there is no setter for the
+			 * argument name, the argument is skipped.
+			 */
+			passedArgumentDefinition = argument.getDefinition();
+			longName = passedArgumentDefinition.getLongName();
+			setterMethod = methodMap.get(longName);
+			if (setterMethod == null) {
 				continue;
 			}
-			extractedInfo = extractor.extract(method);
-			if (!passedInfo.equals(extractedInfo)) {
-				throw new CommandLineException(String.format("The arguments couldn't be set into the command, " +
-						"because the passed argument \"%s\" has meta infos that don't correspond with the meta infos of the " +
-						"setter for the argument of the command class. Usually this means that it was attempted to set an " +
-						"argument of the command by using the wrong argument instance.", longName));
+			/*
+			 * Compares the argument definition of the passed argument with the argument definition in the annotation of the
+			 * setter of the command class. The argument value is only injected into the command if the argument definitions
+			 * match.
+			 */
+			extractedArgumentDefinition = methodDefinitionMap.get(longName);
+			if (!passedArgumentDefinition.equals(extractedArgumentDefinition)) {
+				throw new CommandLineException("The arguments couldn't be injected into the command, because the passed " +
+						"argument \"" + longName + "\" has an argument definition that doesn't correspond with the argument " +
+						"definition in the annotation of the setter of the command class.");
 			}
 			try {
-				method.invoke(object, value);
+				setterMethod.invoke(destinationObject, argument.getValue());
 			} catch (IllegalAccessException | InvocationTargetException e) {
 				throw new CommandLineException(e.getMessage(), e);
 			}
 		}
-	}
-
-	HashMap<String, Method> createArgumentSettersMap(Class<?> clazz) {
-		HashMap<String, Method> methodMap;
-		CommandArgument metaInfo;
-
-		methodMap = new HashMap<>(30);
-		for (Method method : clazz.getMethods()) {
-			metaInfo = method.getAnnotation(CommandArgument.class);
-			if (metaInfo == null) {
-				continue;
-			}
-			methodMap.put(metaInfo.longName(), method);
-		}
-
-		return methodMap;
 	}
 }

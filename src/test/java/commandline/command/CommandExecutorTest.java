@@ -1,80 +1,145 @@
 package commandline.command;
 
-import commandline.language.GnuCommandLineLanguage;
+import commandline.argument.Argument;
+import commandline.argument.ArgumentDefinition;
+import commandline.argument.ArgumentDefinitionBuilder;
+import commandline.argument.validator.DefaultArgumentValidator;
+import commandline.command.mock.SingleArgumentTestCommand;
+import commandline.language.gnu.GnuCommandLineLanguage;
+import commandline.language.parser.specific.BooleanArgumentParser;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.LinkedList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * User: gno, Date: 30.07.13 - 15:31
  */
-public class CommandExecutorTest {
+public class CommandExecutorTest extends ExecutableCommand {
 	public CommandExecutorTest() {
 		super();
 	}
 
+	@Override
+	public void execute(@NotNull Command command) {
+	}
+
 	@Test
-	public void testExecute() throws Exception {
-		CommandExecutor manager;
-		CommandList commands;
-		GnuCommandLineLanguage language;
+	public void testExecuteByCommandDefinition() throws Exception {
 		String cliCommand;
 		String[] cliCommandTokens;
+		Command commandBefore;
+		Command commandAfter;
+		CommandExecutor manager;
+		CommandDefinitionList commandDefinitions;
+		CommandDefinition commandDefinition;
+		GnuCommandLineLanguage language;
+		SingleArgumentTestCommand commandToExecute;
+		ArgumentDefinition argumentDefinition;
+		Argument<Boolean> argument;
+		String argumentValue;
+		CommandDefinitionBuilder commandDefinitionBuilder;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
 
-		commands = new CommandList();
-		commands.add(new MockCommand());
-		language = new GnuCommandLineLanguage();
-		cliCommand = "test-command --test-key value";
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName(ExecutableCommand.ARGUMENT_HELP_LONG_NAME);
+		argumentDefinitionBuilder.setShortName(ExecutableCommand.ARGUMENT_HELP_SHORT_NAME);
+		argumentDefinitionBuilder.setValueClass(Boolean.class);
+		argumentDefinitionBuilder.setParserClass(BooleanArgumentParser.class);
+		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setObligatory(ExecutableCommand.ARGUMENT_HELP_OBLIGATORY);
+		argumentDefinitionBuilder.setDefaultValue(ExecutableCommand.ARGUMENT_HELP_DEFAULT_VALUE);
+		argumentDefinitionBuilder.setDescription(ExecutableCommand.ARGUMENT_HELP_DESCRIPTION);
+		argumentDefinitionBuilder.setExamples(ExecutableCommand.ARGUMENT_HELP_EXAMPLES);
+		argumentDefinition = argumentDefinitionBuilder.create();
+
+		commandToExecute = new SingleArgumentTestCommand();
+		commandDefinitionBuilder = new CommandDefinitionBuilder();
+		commandDefinitionBuilder.setName(SingleArgumentTestCommand.COMMAND_NAME);
+		commandDefinitionBuilder.setDescription(SingleArgumentTestCommand.COMMAND_DESCRIPTION);
+		commandDefinitionBuilder.setCommandToExecute(commandToExecute);
+		commandDefinitionBuilder.setArgumentInjectionEnabled(false);
+		commandDefinitionBuilder.addArgument(argumentDefinition);
+		commandDefinition = commandDefinitionBuilder.create();
+
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(commandDefinition);
+
+		argumentValue = "false";
+		cliCommand = commandDefinition.getName() + " --" + argumentDefinition.getLongName() + " " + argumentValue;
 		cliCommandTokens = cliCommand.split(" ");
-		manager = new CommandExecutor(commands, language);
-		manager.execute(cliCommandTokens);
+		language = new GnuCommandLineLanguage();
+		manager = new CommandExecutor(language);
+		commandAfter = manager.execute(cliCommandTokens, commandDefinitions);
+
+		argument = new Argument<>(argumentDefinition, false);
+		commandBefore = new Command(commandDefinition);
+		commandBefore.addArgument(argument);
+
+		assertTrue(commandToExecute.isExecuted());
+		assertEquals(commandBefore, commandAfter);
 	}
 
-	@Test(expected = CommandLineException.class)
-	public void testExecute_EmptyCommandList() throws Exception {
-		CommandExecutor manager;
-		CommandList commands;
-		GnuCommandLineLanguage language;
+	@Test
+	public void testExecuteByExecutableCommand() throws Exception {
 		String cliCommand;
 		String[] cliCommandTokens;
-
-		commands = new CommandList();
-		language = new GnuCommandLineLanguage();
-		cliCommand = "test-command --test-key value";
-		cliCommandTokens = cliCommand.split(" ");
-		manager = new CommandExecutor(commands, language);
-		manager.execute(cliCommandTokens);
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testExecute_InvalidCommand() throws Exception {
+		Command commandBefore;
+		Command commandAfter;
 		CommandExecutor manager;
-		CommandList commands;
+		CommandDefinitionList commandDefinitions;
+		CommandDefinition commandDefinition;
 		GnuCommandLineLanguage language;
-		String cliCommand;
-		String[] cliCommandTokens;
+		SingleArgumentTestCommand commandToExecute;
+		ArgumentDefinition argumentDefinition;
+		Argument<Boolean> argument;
+		String argumentValue;
+		LinkedList<ExecutableCommand> executableCommands;
+		CommandDefinitionBuilder commandDefinitionBuilder;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
 
-		commands = new CommandList();
-		commands.add(new MockCommand());
-		language = new GnuCommandLineLanguage();
-		cliCommand = "invalid-command --key value";
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName(ExecutableCommand.ARGUMENT_HELP_LONG_NAME);
+		argumentDefinitionBuilder.setShortName(ExecutableCommand.ARGUMENT_HELP_SHORT_NAME);
+		argumentDefinitionBuilder.setValueClass(Boolean.class);
+		argumentDefinitionBuilder.setParserClass(BooleanArgumentParser.class);
+		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setObligatory(ExecutableCommand.ARGUMENT_HELP_OBLIGATORY);
+		argumentDefinitionBuilder.setDefaultValue(ExecutableCommand.ARGUMENT_HELP_DEFAULT_VALUE);
+		argumentDefinitionBuilder.setDescription(ExecutableCommand.ARGUMENT_HELP_DESCRIPTION);
+		argumentDefinitionBuilder.setExamples(ExecutableCommand.ARGUMENT_HELP_EXAMPLES);
+		argumentDefinition = argumentDefinitionBuilder.create();
+
+		commandToExecute = new SingleArgumentTestCommand();
+		commandDefinitionBuilder = new CommandDefinitionBuilder();
+		commandDefinitionBuilder.setName(SingleArgumentTestCommand.COMMAND_NAME);
+		commandDefinitionBuilder.setDescription(SingleArgumentTestCommand.COMMAND_DESCRIPTION);
+		commandDefinitionBuilder.setCommandToExecute(commandToExecute);
+		commandDefinitionBuilder.setArgumentInjectionEnabled(true);
+		commandDefinitionBuilder.addArgument(argumentDefinition);
+		commandDefinition = commandDefinitionBuilder.create();
+
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(commandDefinition);
+
+		argumentValue = "false";
+		cliCommand = commandDefinition.getName() + " --" + argumentDefinition.getLongName() + " " + argumentValue;
 		cliCommandTokens = cliCommand.split(" ");
-		manager = new CommandExecutor(commands, language);
-		manager.execute(cliCommandTokens);
-	}
+		executableCommands = new LinkedList<>();
+		executableCommands.add(commandToExecute);
 
-	@Test(expected = CommandLineException.class)
-	public void testExecute_SyntaxError() throws Exception {
-		CommandExecutor manager;
-		CommandList commands;
-		GnuCommandLineLanguage language;
-		String cliCommand;
-		String[] cliCommandTokens;
-
-		commands = new CommandList();
-		commands.add(new MockCommand());
 		language = new GnuCommandLineLanguage();
-		cliCommand = "syntax-error-command --key";
-		cliCommandTokens = cliCommand.split(" ");
-		manager = new CommandExecutor(commands, language);
-		manager.execute(cliCommandTokens);
+		manager = new CommandExecutor(language);
+		commandAfter = manager.execute(cliCommandTokens, executableCommands);
+
+		argument = new Argument<>(argumentDefinition, false);
+		commandBefore = new Command(commandDefinition);
+		commandBefore.addArgument(argument);
+
+		assertTrue(commandToExecute.isExecuted());
+		assertEquals(commandBefore, commandAfter);
 	}
 }

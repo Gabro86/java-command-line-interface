@@ -1,16 +1,12 @@
 package commandline.command;
 
 import commandline.argument.Argument;
+import commandline.argument.ArgumentDefinition;
+import commandline.argument.ArgumentDefinitionBuilder;
 import commandline.argument.ArgumentList;
-import commandline.argument.metainfo.ArgumentMetaInfo;
-import commandline.argument.metainfo.ArgumentMetaInfoExtractor;
 import commandline.argument.validator.DefaultArgumentValidator;
-import commandline.language.parser.argument.IntegerArgumentParser;
+import commandline.language.parser.specific.IntegerArgumentParser;
 import org.junit.Test;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,63 +19,168 @@ public class CommandInjectorTest {
 	}
 
 	@Test
-	public void testInject() throws Exception {
-		MockCommand command;
+	public void testInjectByArgumentList() throws Exception {
+		MockExecutableCommand command;
 		ArgumentList arguments;
-		Argument<?> argument;
-		List<ArgumentMetaInfo> infos;
-		ArgumentMetaInfo info;
+		Argument<String> argument;
 		String value;
-		ArgumentMetaInfoExtractor extractor;
 		CommandInjector injector;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
+		ArgumentDefinition argumentDefinition;
 
-		//Extracts the meta info for the only argument in TestCommand, because it's needed to create an argument instance
-		extractor = new ArgumentMetaInfoExtractor();
-		infos = extractor.extract(MockCommand.class);
-		assertEquals(1, infos.size());
-		info = infos.get(0);
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
+		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
+		argumentDefinitionBuilder.setValueClass(MockExecutableCommand.ARGUMENT_TEST_VALUE_CLASS);
+		argumentDefinitionBuilder.setParserClass(MockExecutableCommand.ARGUMENT_TEST_PARSER);
+		argumentDefinitionBuilder.setValidatorClass(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
+		argumentDefinitionBuilder.setObligatory(MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY);
+		argumentDefinitionBuilder.setDefaultValue(MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE);
+		argumentDefinitionBuilder.setDescription(MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION);
+		argumentDefinitionBuilder.setExamples(MockExecutableCommand.ARGUMENT_TEST_EXAMPLES);
+		argumentDefinition = argumentDefinitionBuilder.create();
 
 		//Creates the argument list with the only argument of TestCommand with the argument value
 		value = "value1";
-		argument = new Argument<>(info, value);
+		argument = new Argument<>(argumentDefinition, value);
 		arguments = new ArgumentList();
-		arguments.put(argument);
+		arguments.add(argument);
 
-		command = new MockCommand();
+		command = new MockExecutableCommand();
 		injector = new CommandInjector();
 		injector.inject(arguments, command);
-		assertEquals("value1", command.getTestValue());
+		assertEquals(value, command.getTestValue());
 	}
 
 	@Test(expected = CommandLineException.class)
-	public void testInject_WrongArgument() throws Exception {
-		MockCommand command;
+	public void testInjectByArgumentList_WrongArgumentValueClass() throws Exception {
+		MockExecutableCommand command;
 		ArgumentList arguments;
-		Argument<?> argument;
-		ArgumentMetaInfo info;
+		Argument<Integer> argument;
+		ArgumentDefinition argumentDefinition;
 		CommandInjector injector;
-		int value;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
 
-		info = new ArgumentMetaInfo(MockCommand.LONG_NAME, MockCommand.SHORT_NAME, Integer.class, IntegerArgumentParser.class,
-				DefaultArgumentValidator.class, true, null, "description", new String[] {"example"});
-		value = 100;
-		argument = new Argument<>(info, value);
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
+		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
+		argumentDefinitionBuilder.setValueClass(MockExecutableCommand.ARGUMENT_TEST_VALUE_CLASS);
+		argumentDefinitionBuilder.setParserClass(MockExecutableCommand.ARGUMENT_TEST_PARSER);
+		argumentDefinitionBuilder.setValidatorClass(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
+		argumentDefinitionBuilder.setObligatory(MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY);
+		argumentDefinitionBuilder.setDefaultValue(MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE);
+		argumentDefinitionBuilder.setDescription(MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION);
+		argumentDefinitionBuilder.setExamples(MockExecutableCommand.ARGUMENT_TEST_EXAMPLES);
+		argumentDefinition = argumentDefinitionBuilder.create();
+
+		argument = new Argument<>(argumentDefinition, 42);
 		arguments = new ArgumentList();
-		arguments.put(argument);
+		arguments.add(argument);
 
-		command = new MockCommand();
+		command = new MockExecutableCommand();
 		injector = new CommandInjector();
 		injector.inject(arguments, command);
-		assertEquals("value1", command.getTestValue());
+	}
+
+	@Test(expected = CommandLineException.class)
+	public void testInjectByArgumentList_ArgumentDefinitionAndCliAnnotationMissmatch() throws Exception {
+		MockExecutableCommand command;
+		ArgumentList arguments;
+		Argument<Integer> argument;
+		ArgumentDefinition argumentDefinition;
+		CommandInjector injector;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
+
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
+		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
+		argumentDefinitionBuilder.setValueClass(Integer.class);
+		argumentDefinitionBuilder.setParserClass(IntegerArgumentParser.class);
+		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setObligatory(false);
+		argumentDefinitionBuilder.setDefaultValue("100");
+		argumentDefinitionBuilder.setDescription("This is some random description.");
+		argumentDefinitionBuilder.setExamples(new String[] {"42", "111"});
+		argumentDefinition = argumentDefinitionBuilder.create();
+
+		argument = new Argument<>(argumentDefinition, 42);
+		arguments = new ArgumentList();
+		arguments.add(argument);
+
+		command = new MockExecutableCommand();
+		injector = new CommandInjector();
+		injector.inject(arguments, command);
 	}
 
 	@Test
-	public void testCreateArgumentSettersMap() throws Exception {
-		HashMap<String, Method> map;
+	public void testInjectByArgumentList_NoMatchingMethodForArgumentDefinition() throws Exception {
+		MockExecutableCommand command;
+		ArgumentList arguments;
+		Argument<Integer> argument;
+		ArgumentDefinition argumentDefinition;
 		CommandInjector injector;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
+
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName("random-long-name");
+		argumentDefinitionBuilder.setShortName("r");
+		argumentDefinitionBuilder.setValueClass(Integer.class);
+		argumentDefinitionBuilder.setParserClass(IntegerArgumentParser.class);
+		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setObligatory(false);
+		argumentDefinitionBuilder.setDefaultValue("100");
+		argumentDefinitionBuilder.setDescription("This is some random description.");
+		argumentDefinitionBuilder.setExamples(new String[] {"42", "111"});
+		argumentDefinition = argumentDefinitionBuilder.create();
+
+		argument = new Argument<>(argumentDefinition, 42);
+		arguments = new ArgumentList();
+		arguments.add(argument);
+
+		command = new MockExecutableCommand();
+		injector = new CommandInjector();
+		injector.inject(arguments, command);
+	}
+
+	@Test
+	public void testInjectByCommand_WrongArgumentValueClass() throws Exception {
+		MockExecutableCommand commandToInject;
+		Argument<String> argument;
+		Command command;
+		ArgumentDefinition argumentDefinition;
+		CommandInjector injector;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
+		CommandDefinitionBuilder commandDefinitionBuilder;
+		CommandDefinition commandDefinition;
+		String argumentValue;
+
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
+		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
+		argumentDefinitionBuilder.setValueClass(MockExecutableCommand.ARGUMENT_TEST_VALUE_CLASS);
+		argumentDefinitionBuilder.setParserClass(MockExecutableCommand.ARGUMENT_TEST_PARSER);
+		argumentDefinitionBuilder.setValidatorClass(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
+		argumentDefinitionBuilder.setObligatory(MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY);
+		argumentDefinitionBuilder.setDefaultValue(MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE);
+		argumentDefinitionBuilder.setDescription(MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION);
+		argumentDefinitionBuilder.setExamples(MockExecutableCommand.ARGUMENT_TEST_EXAMPLES);
+		argumentDefinition = argumentDefinitionBuilder.create();
+		argumentValue = "bazinga";
+		argument = new Argument<>(argumentDefinition, argumentValue);
+
+		commandToInject = new MockExecutableCommand();
+		commandDefinitionBuilder = new CommandDefinitionBuilder();
+		commandDefinitionBuilder.setName(MockExecutableCommand.COMMAND_NAME);
+		commandDefinitionBuilder.setDescription(MockExecutableCommand.COMMAND_DESCRIPTION);
+		commandDefinitionBuilder.setArgumentInjectionEnabled(true);
+		commandDefinitionBuilder.setCommandToExecute(commandToInject);
+		commandDefinitionBuilder.addArgument(argumentDefinition);
+		commandDefinition = commandDefinitionBuilder.create();
+		command = new Command(commandDefinition);
+		command.addArgument(argument);
 
 		injector = new CommandInjector();
-		map = injector.createArgumentSettersMap(MockCommand.class);
-		assertEquals("setTestField", map.get("test-key").getName());
+		injector.inject(command, commandToInject);
+		assertEquals(argumentValue, commandToInject.getTestValue());
 	}
 }
