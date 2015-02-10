@@ -1,7 +1,7 @@
 package commandline.language.parser;
 
 import commandline.command.CommandLineException;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * User: gno, Date: 06.01.2015 - 17:04
@@ -11,20 +11,20 @@ public class CommandParseException extends CommandLineException {
 		super();
 	}
 
-	public CommandParseException(@NotNull String message) {
+	public CommandParseException(@Nullable String message) {
 		super(message);
 	}
 
-	public CommandParseException(@NotNull Throwable cause) {
+	public CommandParseException(@Nullable Throwable cause) {
 		super(cause);
 	}
 
-	public CommandParseException(@NotNull String message, @NotNull Throwable cause, boolean enableSuppression,
+	public CommandParseException(@Nullable String message, @Nullable Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public CommandParseException(@NotNull String message, @NotNull Throwable cause) {
+	public CommandParseException(@Nullable String message, @Nullable Throwable cause) {
 		super(message, cause);
 	}
 }
