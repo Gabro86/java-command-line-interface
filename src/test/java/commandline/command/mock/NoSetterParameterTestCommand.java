@@ -7,8 +7,8 @@ import commandline.language.parser.specific.StringArgumentParser;
 /**
  * User: gno, Date: 02.08.13 - 15:40
  */
-public class NoMethodParameterTestCommand {
-	public NoMethodParameterTestCommand() {
+public class NoSetterParameterTestCommand {
+	public NoSetterParameterTestCommand() {
 		super();
 	}
 

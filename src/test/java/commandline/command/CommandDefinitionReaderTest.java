@@ -6,8 +6,10 @@ import commandline.argument.ArgumentDefinition;
 import commandline.argument.ArgumentDefinitionTest;
 import commandline.command.mock.DuplicateLongNameTestCommand;
 import commandline.command.mock.DuplicateShortNameTestCommand;
-import commandline.command.mock.NoMethodParameterTestCommand;
-import commandline.command.mock.NoNameTestCommand;
+import commandline.command.mock.InheritedArgumentTestCommand;
+import commandline.command.mock.NoCommandNameTestCommand;
+import commandline.command.mock.NoSetterParameterTestCommand;
+import commandline.command.mock.OverriddenAnnotationsTestCommand;
 import commandline.command.mock.TooManyMethodParametersTestCommand;
 import commandline.command.mock.ValidTestCommand;
 import org.junit.Test;
@@ -49,6 +51,69 @@ public class CommandDefinitionReaderTest {
 		}
 	}
 
+	/**
+	 * Tests if the CliCommand annotation of the superclass is overridden by the CliCommand annotation of the subclass
+	 */
+	@Test
+	public void testReadCommandDefinition_OverriddenCliCommandAnnotation() {
+		CommandDefinitionReader reader;
+		CommandDefinition commandDefinition;
+		String nameBefore;
+		String nameAfter;
+
+		reader = new CommandDefinitionReader();
+		commandDefinition = reader.readCommandDefinition(OverriddenAnnotationsTestCommand.class, new MockExecutableCommand());
+		nameBefore = OverriddenAnnotationsTestCommand.COMMAND_NAME;
+		nameAfter = commandDefinition.getName();
+		assertEquals(nameBefore, nameAfter);
+	}
+
+	/**
+	 * Tests if the CliArgument annotation of the method in the superclass that is overridden in the subclass is read correctly.
+	 */
+	@Test
+	public void testReadCommandDefinition_OverriddenCliArgumentAnnotation() {
+		CommandDefinitionReader reader;
+		CommandDefinition commandDefinition;
+		ArgumentDefinition definition;
+		String nameBefore;
+		String nameAfter;
+
+		reader = new CommandDefinitionReader();
+		commandDefinition = reader.readCommandDefinition(OverriddenAnnotationsTestCommand.class, new MockExecutableCommand());
+
+		nameBefore = OverriddenAnnotationsTestCommand.ARGUMENT_OVERRIDDEN_LONG_NAME;
+		definition = commandDefinition.getArgumentDefinition(nameBefore);
+		nameAfter = definition.getLongName();
+		assertEquals(nameBefore, nameAfter);
+	}
+
+	/**
+	 * Tests if the inherited methods with CliAnnotations are read correctly
+	 */
+	@Test
+	public void testReadCommandDefinition_InheritedCliArgument() {
+		CommandDefinitionReader reader;
+		CommandDefinition commandDefinition;
+		ArgumentDefinition helpArgumentDefinition;
+		ArgumentDefinition testArgumentDefinition;
+		String helpArgumentNameBefore;
+		String testArgumentName;
+		String helpArgumentNameAfter;
+
+		reader = new CommandDefinitionReader();
+		commandDefinition = reader.readCommandDefinition(InheritedArgumentTestCommand.class, new MockExecutableCommand());
+
+		helpArgumentNameBefore = InheritedArgumentTestCommand.ARGUMENT_HELP_LONG_NAME;
+		helpArgumentDefinition = commandDefinition.getArgumentDefinition(helpArgumentNameBefore);
+		helpArgumentNameAfter = helpArgumentDefinition.getLongName();
+		assertEquals(helpArgumentNameBefore, helpArgumentNameAfter);
+
+		testArgumentName = InheritedArgumentTestCommand.ARGUMENT_TEST_LONG_NAME;
+		testArgumentDefinition = commandDefinition.getArgumentDefinition(testArgumentName);
+		assertEquals(testArgumentName, testArgumentDefinition.getLongName());
+	}
+
 	@Test(expected = CommandLineAnnotationException.class)
 	public void testReadCommandDefinition_NoCliCommandAnnotation() {
 		CommandDefinitionReader reader;
@@ -62,7 +127,7 @@ public class CommandDefinitionReaderTest {
 		CommandDefinitionReader reader;
 
 		reader = new CommandDefinitionReader();
-		reader.readCommandDefinition(NoNameTestCommand.class, new MockExecutableCommand());
+		reader.readCommandDefinition(NoCommandNameTestCommand.class, new MockExecutableCommand());
 	}
 
 	@Test(expected = CommandLineException.class)
@@ -169,7 +234,7 @@ public class CommandDefinitionReaderTest {
 		CommandDefinitionReader reader;
 		Method method;
 
-		method = NoMethodParameterTestCommand.class.getMethod("method");
+		method = NoSetterParameterTestCommand.class.getMethod("method");
 		reader = new CommandDefinitionReader();
 		reader.readArgumentDefinition(method);
 	}
