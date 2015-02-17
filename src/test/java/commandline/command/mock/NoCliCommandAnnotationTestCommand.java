@@ -1,16 +1,14 @@
 package commandline.command.mock;
 
-import commandline.annotation.CliCommand;
 import commandline.command.Command;
 import commandline.command.ExecutableCommand;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * User: gno, Date: 02.08.13 - 15:41
+ * User: gno, Date: 16.02.2015 - 15:37
  */
-@CliCommand(name = "", description = "")
-public class NoCommandNameTestCommand extends ExecutableCommand {
-	public NoCommandNameTestCommand() {
+public class NoCliCommandAnnotationTestCommand extends ExecutableCommand {
+	public NoCliCommandAnnotationTestCommand() {
 		super();
 	}
 

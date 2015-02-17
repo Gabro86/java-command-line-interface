@@ -3,14 +3,17 @@ package commandline.command.mock;
 import commandline.annotation.CliArgument;
 import commandline.annotation.CliCommand;
 import commandline.argument.validator.DefaultArgumentValidator;
+import commandline.command.Command;
+import commandline.command.ExecutableCommand;
 import commandline.language.parser.specific.StringArgumentParser;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * User: gno, Date: 02.08.13 - 15:40
  */
 @CliCommand(name = ValidTestCommand.NAME, description = ValidTestCommand.DESCRIPTION)
-public class ValidTestCommand {
-	public static final String NAME = "ValidTestCommand";
+public class ValidTestCommand extends ExecutableCommand {
+	public static final String NAME = "valid-command";
 	public static final String DESCRIPTION = "This is a description.";
 	public static final String EXAMPLE = "example";
 	public static final String COMMAND_1_SHORT_NAME = "a";
@@ -69,5 +72,9 @@ public class ValidTestCommand {
 			isDefaultValueNull = true, parser = StringArgumentParser.class, validator = DefaultArgumentValidator.class,
 			description = DESCRIPTION, examples = {EXAMPLE})
 	public void optionalNullDefaultValue(String a) {
+	}
+
+	@Override
+	public void execute(@NotNull Command command) {
 	}
 }

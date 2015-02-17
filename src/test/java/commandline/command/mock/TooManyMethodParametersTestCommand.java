@@ -2,12 +2,15 @@ package commandline.command.mock;
 
 import commandline.annotation.CliArgument;
 import commandline.argument.validator.DefaultArgumentValidator;
+import commandline.command.Command;
+import commandline.command.ExecutableCommand;
 import commandline.language.parser.specific.StringArgumentParser;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * User: gno, Date: 02.08.13 - 15:41
  */
-public class TooManyMethodParametersTestCommand {
+public class TooManyMethodParametersTestCommand extends ExecutableCommand {
 	public TooManyMethodParametersTestCommand() {
 		super();
 	}
@@ -17,5 +20,9 @@ public class TooManyMethodParametersTestCommand {
 			parser = StringArgumentParser.class, obligatory = true, examples = {ValidTestCommand.EXAMPLE},
 			description = ValidTestCommand.DESCRIPTION)
 	public void method(String a, String b) {
+	}
+
+	@Override
+	public void execute(@NotNull Command command) {
 	}
 }

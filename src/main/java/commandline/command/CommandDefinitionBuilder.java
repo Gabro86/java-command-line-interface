@@ -127,7 +127,7 @@ public class CommandDefinitionBuilder implements Iterable<ArgumentDefinition> {
 	public CommandDefinition create() {
 		CommandDefinition definition;
 
-		definition = new CommandDefinition(getName(), getDescription(), getCommandToExecute(), isArgumentInjectionEnabled());
+		definition = new CommandDefinition(getName(), getDescription(), getCommandToExecute());
 		definition.addAllArgumentDefinitions(getArgumentsList());
 
 		return definition;

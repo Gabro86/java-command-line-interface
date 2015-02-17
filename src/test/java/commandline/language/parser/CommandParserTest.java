@@ -8,8 +8,11 @@ import commandline.command.Command;
 import commandline.command.CommandDefinition;
 import commandline.command.CommandDefinitionBuilder;
 import commandline.command.CommandDefinitionList;
+import commandline.command.CommandDefinitionReader;
+import commandline.command.ExecutableCommand;
 import commandline.command.MockExecutableCommand;
-import commandline.command.help.HelpCommandDefinition;
+import commandline.command.help.HelpExecutableCommand;
+import commandline.command.mock.ValidTestCommand;
 import commandline.language.gnu.GnuCommandLineLanguage;
 import commandline.language.parser.specific.StringArgumentParser;
 import org.junit.Test;
@@ -51,7 +54,6 @@ public class CommandParserTest {
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
-		commandDefinitions.add(new HelpCommandDefinition(commandDefinitions));
 		commandBefore = new Command(commandDefinition);
 
 		argument = new Argument<>(argumentDefinition, "test-value");
@@ -99,7 +101,7 @@ public class CommandParserTest {
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
-		commandDefinitions.add(new HelpCommandDefinition(commandDefinitions));
+		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
 		commandBefore = new Command(commandDefinition);
 
 		argument = new Argument<>(argumentDefinition, expectedValue);
@@ -118,30 +120,108 @@ public class CommandParserTest {
 		String[] cliArguments;
 		Command commandBefore;
 		Command commandAfter;
-		HelpCommandDefinition helpCommandDefinition;
-		String helpArgumentName;
-		Argument<?> helpArgument;
-		String helpArgumentValue;
+		CommandDefinition helpCommandDefinition;
+		Argument<?> requestedCommandArgument;
 		String cliCommand;
-		ArgumentDefinition helpArgumentDefinition;
+		ArgumentDefinition requestedCommandArgumentDefinition;
 		GnuCommandLineLanguage language;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
+		ArgumentDefinition helpArgumentDefinition;
+		Argument<Boolean> helpArgument;
 
-		commandDefinitions = new CommandDefinitionList();
-		helpCommandDefinition = new HelpCommandDefinition(commandDefinitions);
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName(ExecutableCommand.ARGUMENT_HELP_LONG_NAME);
+		argumentDefinitionBuilder.setShortName(ExecutableCommand.ARGUMENT_HELP_SHORT_NAME);
+		argumentDefinitionBuilder.setObligatory(ExecutableCommand.ARGUMENT_HELP_OBLIGATORY);
+		argumentDefinitionBuilder.setValueClass(ExecutableCommand.ARGUMENT_VALUE_CLASS);
+		argumentDefinitionBuilder.setDefaultValue(ExecutableCommand.ARGUMENT_HELP_DEFAULT_VALUE);
+		argumentDefinitionBuilder.setParserClass(ExecutableCommand.ARGUMENT_PARSER_CLASS);
+		argumentDefinitionBuilder.setValidatorClass(ExecutableCommand.ARGUMENT_VALIDATOR_CLASS);
+		argumentDefinitionBuilder.setExamples(ExecutableCommand.ARGUMENT_HELP_EXAMPLES);
+		argumentDefinitionBuilder.setDescription(ExecutableCommand.ARGUMENT_HELP_DESCRIPTION);
+		helpArgumentDefinition = argumentDefinitionBuilder.create();
+		helpArgument = new Argument<>(helpArgumentDefinition, false);
 
-		helpArgumentDefinition = helpCommandDefinition.getArgumentDefinition("c");
-		helpArgument = new Argument<>(helpArgumentDefinition, "test-value");
+		helpCommandDefinition = HelpExecutableCommand.readDefinitionFromAnnotations(new CommandDefinitionList());
+		requestedCommandArgumentDefinition = helpCommandDefinition.getArgumentDefinition("c");
+		requestedCommandArgument = new Argument<>(requestedCommandArgumentDefinition, "test-value");
+
 		commandBefore = new Command(helpCommandDefinition);
+		commandBefore.addArgument(requestedCommandArgument);
 		commandBefore.addArgument(helpArgument);
 
-		helpArgumentName = "c";
-		helpArgumentValue = "test-value";
-		cliCommand = helpCommandDefinition.getName() + " -" + helpArgumentName + " " + helpArgumentValue;
+		cliCommand = helpCommandDefinition.getName() + " -c test-value";
 		cliArguments = cliCommand.split(" ");
 
 		language = new GnuCommandLineLanguage();
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(helpCommandDefinition);
 		parser = new CommandParser(language, commandDefinitions);
 		commandAfter = parser.parse(cliArguments);
+		assertEquals(commandBefore, commandAfter);
+	}
+
+	@Test
+	public void testParse_HelpArgument_LongName() throws Exception {
+		CommandParser parser;
+		CommandDefinitionList commandDefinitions;
+		String[] cliTokens;
+		CommandDefinition commandDefinition;
+		Command commandBefore;
+		Command commandAfter;
+		Argument<Boolean> argument;
+		String cliCommand;
+		CommandDefinitionReader definitionReader;
+		ArgumentDefinition helpArgumentDefinition;
+
+		//Defines the command that is expected after the parsing
+		definitionReader = new CommandDefinitionReader();
+		commandDefinition = definitionReader.readCommandDefinition(new ValidTestCommand());
+		helpArgumentDefinition = commandDefinition.getArgumentDefinition(HelpExecutableCommand.ARGUMENT_HELP_LONG_NAME);
+		argument = new Argument<>(helpArgumentDefinition, true);
+		commandBefore = new Command(commandDefinition);
+		commandBefore.addArgument(argument);
+
+		//Creates the cli command that will be parsed
+		cliCommand = ValidTestCommand.NAME + " --help true --" + ValidTestCommand.COMMAND_1_SHORT_NAME + " test-value";
+		cliTokens = cliCommand.split(" ");
+
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(commandDefinition);
+		parser = new CommandParser(new GnuCommandLineLanguage(), commandDefinitions);
+		commandAfter = parser.parse(cliTokens);
+		assertEquals(commandBefore, commandAfter);
+	}
+
+	@Test
+	public void testParse_HelpArgument_ShortName() throws Exception {
+		CommandParser parser;
+		CommandDefinitionList commandDefinitions;
+		String[] cliTokens;
+		CommandDefinition commandDefinition;
+		Command commandBefore;
+		Command commandAfter;
+		Argument<Boolean> argument;
+		String cliCommand;
+		CommandDefinitionReader definitionReader;
+		ArgumentDefinition helpArgumentDefinition;
+
+		//Defines the command that is expected after the parsing
+		definitionReader = new CommandDefinitionReader();
+		commandDefinition = definitionReader.readCommandDefinition(new ValidTestCommand());
+		helpArgumentDefinition = commandDefinition.getArgumentDefinition(HelpExecutableCommand.ARGUMENT_HELP_LONG_NAME);
+		argument = new Argument<>(helpArgumentDefinition, true);
+		commandBefore = new Command(commandDefinition);
+		commandBefore.addArgument(argument);
+
+		//Creates the cli command that will be parsed
+		cliCommand = ValidTestCommand.NAME + " -h true --" + ValidTestCommand.COMMAND_1_SHORT_NAME + " test-value";
+		cliTokens = cliCommand.split(" ");
+
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(commandDefinition);
+		parser = new CommandParser(new GnuCommandLineLanguage(), commandDefinitions);
+		commandAfter = parser.parse(cliTokens);
 		assertEquals(commandBefore, commandAfter);
 	}
 
@@ -163,7 +243,7 @@ public class CommandParserTest {
 		commandDefinition = commandDefinitionBuilder.create();
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
-		commandDefinitions.add(new HelpCommandDefinition(commandDefinitions));
+		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
 		commandBefore = new Command(commandDefinition);
 
 		stringArguments = "test-command --test-key test-value".split(" ");
@@ -206,7 +286,7 @@ public class CommandParserTest {
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
-		commandDefinitions.add(new HelpCommandDefinition(commandDefinitions));
+		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
 		commandBefore = new Command(commandDefinition);
 
 		argument = new Argument<>(argumentDefinition, "test-value");
@@ -252,7 +332,7 @@ public class CommandParserTest {
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
-		commandDefinitions.add(new HelpCommandDefinition(commandDefinitions));
+		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
 		commandBefore = new Command(commandDefinition);
 
 		argument = new Argument<>(argumentDefinition, "test-value");

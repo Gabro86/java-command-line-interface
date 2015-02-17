@@ -29,7 +29,6 @@ public class SingleArgumentTestCommand extends ExecutableCommand {
 
 	@Override
 	public void execute(@NotNull Command command) {
-		super.execute(command);
 		setExecuted(true);
 	}
 }

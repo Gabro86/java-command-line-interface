@@ -51,8 +51,8 @@ public class CommandListTest {
 		Command command2;
 		LinkedList<Command> commandList;
 
-		command1 = new Command("command1", "description1", new MockExecutableCommand(), false);
-		command2 = new Command("command2", "description2", new MockExecutableCommand(), false);
+		command1 = new Command("command1", "description1", new MockExecutableCommand());
+		command2 = new Command("command2", "description2", new MockExecutableCommand());
 		commandList = new LinkedList<>();
 		commandList.add(command1);
 		commandList.add(command2);
@@ -69,7 +69,7 @@ public class CommandListTest {
 		Command command;
 		LinkedList<Command> commandList;
 
-		command = new Command("command", "description", new MockExecutableCommand(), false);
+		command = new Command("command", "description", new MockExecutableCommand());
 		commandList = new LinkedList<>();
 		commandList.add(command);
 		commandList.add(command);

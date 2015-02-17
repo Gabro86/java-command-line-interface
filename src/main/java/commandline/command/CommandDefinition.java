@@ -17,16 +17,14 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 	private final String description;
 	@NotNull
 	private final ExecutableCommand commandToExecute;
-	private final boolean argumentInjectionEnabled;
 	@NotNull
 	private final ArgumentDefinitionList arguments;
 
 	public CommandDefinition(@NotNull CliCommand commandAnnotation, @NotNull ExecutableCommand commandToExecute) {
-		this(commandAnnotation.name(), commandAnnotation.description(), commandToExecute, true);
+		this(commandAnnotation.name(), commandAnnotation.description(), commandToExecute);
 	}
 
-	public CommandDefinition(@NotNull String name, @NotNull String description, @NotNull ExecutableCommand commandToExecute,
-			boolean argumentInjectionEnabled) {
+	public CommandDefinition(@NotNull String name, @NotNull String description, @NotNull ExecutableCommand commandToExecute) {
 		super();
 
 		String editName;
@@ -50,7 +48,6 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 		this.description = description;
 		this.arguments = new ArgumentDefinitionList();
 		this.commandToExecute = commandToExecute;
-		this.argumentInjectionEnabled = argumentInjectionEnabled;
 	}
 
 	@NotNull
@@ -68,8 +65,14 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 		return this.commandToExecute;
 	}
 
-	public boolean isArgumentInjectionEnabled() {
-		return this.argumentInjectionEnabled;
+	public boolean isArgumentsInjectionEnabled() {
+		CommandDefinitionReader reader;
+		boolean hasCommandDefinition;
+
+		reader = new CommandDefinitionReader();
+		hasCommandDefinition = reader.hasCommandDefinition(getCommandToExecute());
+
+		return hasCommandDefinition;
 	}
 
 	@NotNull
@@ -137,17 +140,6 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 	}
 
 	@Override
-	public String toString() {
-		return "CommandDefinition{" +
-				"name='" + this.name + '\'' +
-				", description='" + this.description + '\'' +
-				", commandToExecute=" + this.commandToExecute +
-				", argumentInjectionEnabled=" + this.argumentInjectionEnabled +
-				", arguments=" + this.arguments +
-				'}';
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -158,9 +150,6 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 
 		CommandDefinition that = (CommandDefinition) o;
 
-		if (this.argumentInjectionEnabled != that.argumentInjectionEnabled) {
-			return false;
-		}
 		if (!this.arguments.equals(that.arguments)) {
 			return false;
 		}
@@ -182,13 +171,22 @@ public class CommandDefinition implements Comparable<CommandDefinition>, Iterabl
 		int result = this.name.hashCode();
 		result = 31 * result + this.description.hashCode();
 		result = 31 * result + this.commandToExecute.hashCode();
-		result = 31 * result + (this.argumentInjectionEnabled ? 1 : 0);
 		result = 31 * result + this.arguments.hashCode();
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "CommandDefinition{" +
+				"name='" + this.name + '\'' +
+				", description='" + this.description + '\'' +
+				", commandToExecute=" + this.commandToExecute +
+				", arguments=" + this.arguments +
+				'}';
+	}
+
 	@NotNull
 	public static CommandDefinition createMock() {
-		return new CommandDefinition("test-command", "This is a description.", new MockExecutableCommand(), false);
+		return new CommandDefinition("test-command", "This is a description.", new MockExecutableCommand());
 	}
 }

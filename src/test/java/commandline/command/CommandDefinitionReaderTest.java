@@ -7,6 +7,7 @@ import commandline.argument.ArgumentDefinitionTest;
 import commandline.command.mock.DuplicateLongNameTestCommand;
 import commandline.command.mock.DuplicateShortNameTestCommand;
 import commandline.command.mock.InheritedArgumentTestCommand;
+import commandline.command.mock.NoCliCommandAnnotationTestCommand;
 import commandline.command.mock.NoCommandNameTestCommand;
 import commandline.command.mock.NoSetterParameterTestCommand;
 import commandline.command.mock.OverriddenAnnotationsTestCommand;
@@ -35,7 +36,7 @@ public class CommandDefinitionReaderTest {
 		CliArgument castedAnnotation;
 
 		reader = new CommandDefinitionReader();
-		commandDefinition = reader.readCommandDefinition(ValidTestCommand.class, new MockExecutableCommand());
+		commandDefinition = reader.readCommandDefinition(new ValidTestCommand());
 		assertEquals(ValidTestCommand.NAME, commandDefinition.getName());
 		assertEquals(ValidTestCommand.DESCRIPTION, commandDefinition.getDescription());
 		annotations = ValidTestCommand.class.getAnnotations();
@@ -62,7 +63,7 @@ public class CommandDefinitionReaderTest {
 		String nameAfter;
 
 		reader = new CommandDefinitionReader();
-		commandDefinition = reader.readCommandDefinition(OverriddenAnnotationsTestCommand.class, new MockExecutableCommand());
+		commandDefinition = reader.readCommandDefinition(new OverriddenAnnotationsTestCommand());
 		nameBefore = OverriddenAnnotationsTestCommand.COMMAND_NAME;
 		nameAfter = commandDefinition.getName();
 		assertEquals(nameBefore, nameAfter);
@@ -80,7 +81,7 @@ public class CommandDefinitionReaderTest {
 		String nameAfter;
 
 		reader = new CommandDefinitionReader();
-		commandDefinition = reader.readCommandDefinition(OverriddenAnnotationsTestCommand.class, new MockExecutableCommand());
+		commandDefinition = reader.readCommandDefinition(new OverriddenAnnotationsTestCommand());
 
 		nameBefore = OverriddenAnnotationsTestCommand.ARGUMENT_OVERRIDDEN_LONG_NAME;
 		definition = commandDefinition.getArgumentDefinition(nameBefore);
@@ -102,7 +103,7 @@ public class CommandDefinitionReaderTest {
 		String helpArgumentNameAfter;
 
 		reader = new CommandDefinitionReader();
-		commandDefinition = reader.readCommandDefinition(InheritedArgumentTestCommand.class, new MockExecutableCommand());
+		commandDefinition = reader.readCommandDefinition(new InheritedArgumentTestCommand());
 
 		helpArgumentNameBefore = InheritedArgumentTestCommand.ARGUMENT_HELP_LONG_NAME;
 		helpArgumentDefinition = commandDefinition.getArgumentDefinition(helpArgumentNameBefore);
@@ -119,7 +120,7 @@ public class CommandDefinitionReaderTest {
 		CommandDefinitionReader reader;
 
 		reader = new CommandDefinitionReader();
-		reader.readCommandDefinition(Object.class, new MockExecutableCommand());
+		reader.readCommandDefinition(new NoCliCommandAnnotationTestCommand());
 	}
 
 	@Test(expected = CommandLineException.class)
@@ -127,7 +128,7 @@ public class CommandDefinitionReaderTest {
 		CommandDefinitionReader reader;
 
 		reader = new CommandDefinitionReader();
-		reader.readCommandDefinition(NoCommandNameTestCommand.class, new MockExecutableCommand());
+		reader.readCommandDefinition(new NoCommandNameTestCommand());
 	}
 
 	@Test(expected = CommandLineException.class)

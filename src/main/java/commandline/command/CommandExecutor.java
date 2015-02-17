@@ -1,5 +1,6 @@
 package commandline.command;
 
+import commandline.command.help.HelpExecutableCommand;
 import commandline.exception.ArgumentNullException;
 import commandline.language.CommandLineLanguage;
 import commandline.language.parser.CommandParser;
@@ -27,6 +28,7 @@ public class CommandExecutor {
 	public Command execute(@NotNull String[] cliArguments, @NotNull CommandDefinitionList commandDefinitions) {
 		Command command;
 		CommandParser commandParser;
+		CommandDefinitionList editCommandDefinitions;
 
 		if (cliArguments == null) {
 			throw new ArgumentNullException();
@@ -35,7 +37,11 @@ public class CommandExecutor {
 			throw new ArgumentNullException();
 		}
 
-		commandParser = new CommandParser(getCommandLineLanguage(), commandDefinitions);
+		editCommandDefinitions = new CommandDefinitionList();
+		editCommandDefinitions.addAll(commandDefinitions.getCollection());
+		editCommandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
+
+		commandParser = new CommandParser(getCommandLineLanguage(), editCommandDefinitions);
 		command = commandParser.parse(cliArguments);
 		command.execute();
 
@@ -59,9 +65,10 @@ public class CommandExecutor {
 		reader = new CommandDefinitionReader();
 		definitions = new CommandDefinitionList();
 		for (ExecutableCommand executableCommand : commands) {
-			definition = reader.readCommandDefinition(executableCommand.getClass(), executableCommand);
+			definition = reader.readCommandDefinition(executableCommand);
 			definitions.add(definition);
 		}
+		definitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(definitions));
 
 		commandParser = new CommandParser(getCommandLineLanguage(), definitions);
 		command = commandParser.parse(cliArguments);

@@ -37,10 +37,7 @@ public class GnuCommandSyntaxValidator extends CommandSyntaxValidator {
 		//Validates the command name.
 		commandName = commandTokens[0];
 		nameValidator = new GnuCommandNameSyntaxValidator();
-		if (!nameValidator.isValid(commandName)) {
-			throw new SyntaxException("The syntax validation of the command failed, because the syntax of the command name \"" +
-					commandName + "\" is invalid.");
-		}
+		nameValidator.validate(commandName);
 
 		//Validates the keys and values of the cli arguments
 		if (commandTokens.length > 1) {

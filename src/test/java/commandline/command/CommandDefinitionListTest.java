@@ -50,8 +50,8 @@ public class CommandDefinitionListTest {
 		CommandDefinition definition2;
 		LinkedList<CommandDefinition> definitionList;
 
-		definition1 = new CommandDefinition("command1", "description1", new MockExecutableCommand(), false);
-		definition2 = new CommandDefinition("command2", "description2", new MockExecutableCommand(), false);
+		definition1 = new CommandDefinition("command1", "description1", new MockExecutableCommand());
+		definition2 = new CommandDefinition("command2", "description2", new MockExecutableCommand());
 		definitionList = new LinkedList<>();
 		definitionList.add(definition1);
 		definitionList.add(definition2);
@@ -67,7 +67,7 @@ public class CommandDefinitionListTest {
 		CommandDefinition definition;
 		LinkedList<CommandDefinition> definitionList;
 
-		definition = new CommandDefinition("command", "description", new MockExecutableCommand(), false);
+		definition = new CommandDefinition("command", "description", new MockExecutableCommand());
 		definitionList = new LinkedList<>();
 		definitionList.add(definition);
 		definitionList.add(definition);
@@ -162,8 +162,8 @@ public class CommandDefinitionListTest {
 		CommandDefinition definition2;
 		Collection<CommandDefinition> definitionList;
 
-		definition1 = new CommandDefinition("command1", "description1", new MockExecutableCommand(), true);
-		definition2 = new CommandDefinition("command2", "description2", new MockExecutableCommand(), true);
+		definition1 = new CommandDefinition("command1", "description1", new MockExecutableCommand());
+		definition2 = new CommandDefinition("command2", "description2", new MockExecutableCommand());
 		definitions = new CommandDefinitionList();
 		definitions.add(definition1);
 		definitions.add(definition2);
@@ -189,8 +189,8 @@ public class CommandDefinitionListTest {
 		CommandDefinition definition2;
 		Map<String, CommandDefinition> definitionMap;
 
-		definition1 = new CommandDefinition("command1", "description1", new MockExecutableCommand(), true);
-		definition2 = new CommandDefinition("command2", "description2", new MockExecutableCommand(), true);
+		definition1 = new CommandDefinition("command1", "description1", new MockExecutableCommand());
+		definition2 = new CommandDefinition("command2", "description2", new MockExecutableCommand());
 		definitions = new CommandDefinitionList();
 		definitions.add(definition1);
 		definitions.add(definition2);

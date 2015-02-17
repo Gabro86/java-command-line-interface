@@ -6,8 +6,8 @@ import commandline.argument.GenericArgument;
 import commandline.command.Command;
 import commandline.command.CommandDefinition;
 import commandline.command.CommandDefinitionList;
+import commandline.command.ExecutableCommand;
 import commandline.command.GenericCommand;
-import commandline.command.help.HelpCommandDefinition;
 import commandline.exception.ArgumentNullException;
 import commandline.language.CommandLineLanguage;
 import org.jetbrains.annotations.NotNull;
@@ -52,12 +52,13 @@ public class CommandParser {
 		GenericArgument genericArgument;
 		String argumentLongName;
 		String argumentShortName;
+		String argumentName;
 		Argument<?> typeSafeArgument;
+		ArgumentDefinition argumentDefinition;
+		ArgumentDefinition helpArgumentDefinition;
+		String commandName;
 		Command typeSafeCommand;
 		CommandDefinition commandDefinition;
-		String commandName;
-		ArgumentDefinition argumentDefinition;
-		String argumentName;
 
 		if (cliArguments == null) {
 			throw new ArgumentNullException();
@@ -73,12 +74,8 @@ public class CommandParser {
 		 */
 		commandDefinition = getCommandDefinitions().get(commandName);
 		if (commandDefinition == null) {
-			if (commandName.equals(HelpCommandDefinition.COMMAND_NAME)) {
-				commandDefinition = new HelpCommandDefinition(getCommandDefinitions());
-			} else {
-				throw new CommandParseException("The cli command \"" + commandName + "\" could not been parsed, because the " +
-						"corresponding command definition was not found.");
-			}
+			throw new CommandParseException("The cli command \"" + commandName + "\" could not been parsed, because the " +
+					"corresponding command definition was not found.");
 		}
 
 		/*
@@ -91,7 +88,27 @@ public class CommandParser {
 		parser = getCommandLineLanguage().getGenericCommandParser();
 		genericCommand = parser.parse(cliArguments);
 
-		//Tests if the passed cli arguments contain one or more arguments that are not defined for the command.
+		/*
+		 * In case the cli arguments contain the help argument, only the help argument is parsed and the other arguments are
+		 * ignored, because the help arguments indicates that the user wants to print the help for the command on the console and
+		 * doesn't want to execute the command.
+		 */
+		shortGenericArgument = genericCommand.getArgument(ExecutableCommand.ARGUMENT_HELP_SHORT_NAME);
+		longGenericArgument = genericCommand.getArgument(ExecutableCommand.ARGUMENT_HELP_LONG_NAME);
+		if (longGenericArgument != null) {
+			genericArgument = longGenericArgument;
+		} else {
+			genericArgument = shortGenericArgument;
+		}
+		if (genericArgument != null) {
+			helpArgumentDefinition = commandDefinition.getArgumentDefinition(genericArgument.getName());
+			typeSafeArgument = Argument.parse(helpArgumentDefinition, genericArgument.getValue());
+			typeSafeCommand = new Command(commandDefinition);
+			typeSafeCommand.addArgument(typeSafeArgument);
+			return typeSafeCommand;
+		}
+
+		//Tests if the passed cli arguments contain arguments that are not defined for the command.
 		for (GenericArgument argument : genericCommand) {
 			argumentName = argument.getName();
 			argumentDefinition = commandDefinition.getArgumentDefinition(argumentName);
@@ -101,10 +118,7 @@ public class CommandParser {
 			}
 		}
 
-		/*
-		 * Validates the GenericCommand instance, tests if the GenericCommand contains every obligatory argument and creates a
-		 * type-safe Command instance from the GenericCommand instance
-		 */
+		//Creates a type-safe Command instance from the GenericCommand instance
 		typeSafeCommand = new Command(commandDefinition);
 		for (ArgumentDefinition definition : commandDefinition) {
 			argumentLongName = definition.getLongName();
@@ -113,18 +127,14 @@ public class CommandParser {
 			longGenericArgument = genericCommand.getArgument(argumentShortName);
 
 			/*
-			 * Tests if the passed cli argument has a name. Either the short or the long name must exist if the argument is marked as
-			 * obligatory.
+			 * Tests if the argument was passed throw cli. If it was not passed and the argument is not obligatory the default value
+			 * will be used.
 			 */
 			if (shortGenericArgument == null && longGenericArgument == null) {
-				/*
-				 * The current argument was not passed throw cli. If the current argument is obligatory an exception is thrown. If
-				 * the argument is not obligatory the default value will be used.
-				 */
 				if (definition.isObligatory()) {
 					throw new CommandParseException("The cli command  \"" + commandName + "\" could not been parsed, " +
 							"because the cli command \"" + commandName + "\" doesn't contain the obligatory argument \"" +
-							argumentLongName + " (" + argumentShortName + ")\".");
+							definition.getLongName() + " (" + definition.getShortName() + ")\".");
 				} else {
 					//Since this argument was not passed throw cli the default value will be used.
 					longGenericArgument = new GenericArgument(definition.getLongName(), definition.getDefaultValue());
@@ -139,7 +149,10 @@ public class CommandParser {
 						"short name, but not both in the same command.");
 			}
 
-			//Converts the GenericArgument instance into a type-safe Argument instance and puts it into the type-safe Command instance
+			/*
+			 * Converts the GenericArgument instance into a type-safe Argument instance and puts it into the type-safe Command
+			 * instance
+			 */
 			if (longGenericArgument != null) {
 				genericArgument = longGenericArgument;
 			} else {

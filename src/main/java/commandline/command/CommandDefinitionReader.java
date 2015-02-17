@@ -20,24 +20,36 @@ public class CommandDefinitionReader {
 		super();
 	}
 
-	public CommandDefinition readCommandDefinition(Class<?> annotatedClass, ExecutableCommand commandToExecute) {
-		CommandDefinition commandDefinition;
-		List<ArgumentDefinition> argumentDefinitions;
+	public boolean hasCommandDefinition(ExecutableCommand commandToExecute) {
 		CliCommand definitionAnnotation;
+		Class<? extends ExecutableCommand> clazz;
 
-		if (annotatedClass == null) {
-			throw new ArgumentNullException();
-		}
 		if (commandToExecute == null) {
 			throw new ArgumentNullException();
 		}
-		definitionAnnotation = annotatedClass.getAnnotation(CliCommand.class);
-		if (definitionAnnotation == null) {
+		clazz = commandToExecute.getClass();
+		definitionAnnotation = clazz.getAnnotation(CliCommand.class);
+
+		return definitionAnnotation != null;
+	}
+
+	public CommandDefinition readCommandDefinition(ExecutableCommand commandToExecute) {
+		CommandDefinition commandDefinition;
+		List<ArgumentDefinition> argumentDefinitions;
+		CliCommand definitionAnnotation;
+		Class<? extends ExecutableCommand> clazz;
+
+		if (commandToExecute == null) {
+			throw new ArgumentNullException();
+		}
+		clazz = commandToExecute.getClass();
+		if (!hasCommandDefinition(commandToExecute)) {
 			throw new CommandLineAnnotationException("The command definition could not been read, because the passed " +
-					"class \"" + annotatedClass.getSimpleName() + "\" doesn't have the annotation " +
+					"class \"" + clazz.getSimpleName() + "\" doesn't have the annotation " +
 					CliCommand.class.getSimpleName());
 		}
-		argumentDefinitions = readArgumentDefinitions(annotatedClass);
+		definitionAnnotation = clazz.getAnnotation(CliCommand.class);
+		argumentDefinitions = readArgumentDefinitions(clazz);
 		commandDefinition = new CommandDefinition(definitionAnnotation, commandToExecute);
 		commandDefinition.addAllArgumentDefinitions(argumentDefinitions);
 

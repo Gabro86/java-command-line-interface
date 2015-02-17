@@ -23,11 +23,10 @@ public class Command implements Comparable<Command>, Iterable<Argument<?>> {
 		this.argumentList = new ArgumentList();
 	}
 
-	public Command(@NotNull String name, String description, @NotNull ExecutableCommand commandToExecute,
-			boolean argumentInjectionEnabled) {
+	public Command(@NotNull String name, String description, @NotNull ExecutableCommand commandToExecute) {
 		super();
 		this.argumentList = new ArgumentList();
-		this.definition = new CommandDefinition(name, description, commandToExecute, argumentInjectionEnabled);
+		this.definition = new CommandDefinition(name, description, commandToExecute);
 	}
 
 	@NotNull
@@ -50,18 +49,12 @@ public class Command implements Comparable<Command>, Iterable<Argument<?>> {
 		return getDefinition().getCommandToExecute();
 	}
 
-	public boolean isArgumentInjectionEnabled() {
-		return getDefinition().isArgumentInjectionEnabled();
+	public boolean isArgumentsInjectionEnabled() {
+		return getDefinition().isArgumentsInjectionEnabled();
 	}
 
 	public void execute() {
-		CommandInjector injector;
-
-		if (isArgumentInjectionEnabled()) {
-			injector = new CommandInjector();
-			injector.inject(this, getCommandToExecute());
-		}
-		getCommandToExecute().execute(this);
+		getCommandToExecute().baseExecute(this);
 	}
 
 	@NotNull
@@ -166,6 +159,6 @@ public class Command implements Comparable<Command>, Iterable<Argument<?>> {
 
 	@NotNull
 	public static Command createMock() {
-		return new Command("mock-command", "This is a mock command.", new MockExecutableCommand(), false);
+		return new Command("mock-command", "This is a mock command.", new MockExecutableCommand());
 	}
 }

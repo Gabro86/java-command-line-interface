@@ -22,7 +22,7 @@ public class CommandDefinitionBuilderTest {
 		commandToExecute = new MockExecutableCommand();
 		argumentInjectionEnabled = true;
 		arguments = new ArgumentDefinitionList();
-		expectedDefinition = new CommandDefinition(name, description, commandToExecute, argumentInjectionEnabled);
+		expectedDefinition = new CommandDefinition(name, description, commandToExecute);
 
 		builder = new CommandDefinitionBuilder();
 		builder.setName(name);

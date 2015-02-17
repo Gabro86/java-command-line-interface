@@ -2,7 +2,9 @@ package commandline.command.mock;
 
 import commandline.annotation.CliArgument;
 import commandline.annotation.CliCommand;
+import commandline.command.Command;
 import commandline.command.ExecutableCommand;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * User: gno, Date: 02.08.13 - 15:40
@@ -24,5 +26,9 @@ public class OverriddenAnnotationsTestCommand extends ExecutableCommand {
 	@Override
 	public void setShowHelp(boolean showHelp) {
 		super.setShowHelp(showHelp);
+	}
+
+	@Override
+	public void execute(@NotNull Command command) {
 	}
 }
