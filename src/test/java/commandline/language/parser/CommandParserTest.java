@@ -38,8 +38,8 @@ public class CommandParserTest {
 		argumentDefinitionBuilder.setShortName("t");
 		argumentDefinitionBuilder.setDescription("This is a test argument.");
 		argumentDefinitionBuilder.setValueClass(String.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
-		argumentDefinitionBuilder.setParserClass(StringArgumentParser.class);
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
+		argumentDefinitionBuilder.setParser(new StringArgumentParser());
 		argumentDefinitionBuilder.setDefaultValue("test-default-value");
 		argumentDefinitionBuilder.setExamples(new String[] {"example"});
 		argumentDefinitionBuilder.setObligatory(false);
@@ -83,8 +83,8 @@ public class CommandParserTest {
 		argumentDefinitionBuilder.setShortName("t");
 		argumentDefinitionBuilder.setDescription("This is a test argument.");
 		argumentDefinitionBuilder.setValueClass(String.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
-		argumentDefinitionBuilder.setParserClass(StringArgumentParser.class);
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
+		argumentDefinitionBuilder.setParser(new StringArgumentParser());
 		expectedValue = "test-default-value";
 		argumentDefinitionBuilder.setDefaultValue(expectedValue);
 		argumentDefinitionBuilder.setExamples(new String[] {"example"});
@@ -133,8 +133,8 @@ public class CommandParserTest {
 		argumentDefinitionBuilder.setObligatory(ExecutableCommand.ARGUMENT_HELP_OBLIGATORY);
 		argumentDefinitionBuilder.setValueClass(ExecutableCommand.ARGUMENT_VALUE_CLASS);
 		argumentDefinitionBuilder.setDefaultValue(ExecutableCommand.ARGUMENT_HELP_DEFAULT_VALUE);
-		argumentDefinitionBuilder.setParserClass(ExecutableCommand.ARGUMENT_PARSER_CLASS);
-		argumentDefinitionBuilder.setValidatorClass(ExecutableCommand.ARGUMENT_VALIDATOR_CLASS);
+		argumentDefinitionBuilder.setParser(ExecutableCommand.ARGUMENT_PARSER);
+		argumentDefinitionBuilder.setValidator(ExecutableCommand.ARGUMENT_VALIDATOR);
 		argumentDefinitionBuilder.setExamples(ExecutableCommand.ARGUMENT_HELP_EXAMPLES);
 		argumentDefinitionBuilder.setDescription(ExecutableCommand.ARGUMENT_HELP_DESCRIPTION);
 		helpArgumentDefinition = argumentDefinitionBuilder.create();
@@ -267,8 +267,8 @@ public class CommandParserTest {
 		argumentDefinitionBuilder.setShortName("t");
 		argumentDefinitionBuilder.setDescription("This is a test argument.");
 		argumentDefinitionBuilder.setValueClass(String.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
-		argumentDefinitionBuilder.setParserClass(StringArgumentParser.class);
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
+		argumentDefinitionBuilder.setParser(new StringArgumentParser());
 		argumentDefinitionBuilder.setDefaultValue(null);
 		argumentDefinitionBuilder.setExamples(new String[] {"example"});
 		argumentDefinitionBuilder.setObligatory(true);
@@ -312,8 +312,8 @@ public class CommandParserTest {
 		argumentDefinitionBuilder.setShortName("t");
 		argumentDefinitionBuilder.setDescription("This is a test argument.");
 		argumentDefinitionBuilder.setValueClass(String.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
-		argumentDefinitionBuilder.setParserClass(StringArgumentParser.class);
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
+		argumentDefinitionBuilder.setParser(new StringArgumentParser());
 		argumentDefinitionBuilder.setDefaultValue(null);
 		argumentDefinitionBuilder.setExamples(new String[] {"example"});
 		argumentDefinitionBuilder.setObligatory(true);

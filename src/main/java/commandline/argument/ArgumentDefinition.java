@@ -33,9 +33,9 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 	@NotNull
 	private final Class<?> valueClass;
 	@NotNull
-	private final Class<? extends ArgumentParser<?>> parserClass;
+	private final ArgumentParser<?> parser;
 	@NotNull
-	private final Class<? extends ArgumentValidator<?>> validatorClass;
+	private final ArgumentValidator<?> validator;
 	private final boolean obligatory;
 	@Nullable
 	private final String defaultValue;
@@ -45,13 +45,14 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 	private final String[] examples;
 
 	public ArgumentDefinition(@NotNull CliArgument definition, @NotNull Class<?> valueClass) {
-		this(definition.longName(), definition.shortName(), valueClass, definition.parser(), definition.validator(),
-				definition.obligatory(), getDefaultValueFromAnnotation(definition), definition.description(), definition.examples());
+		this(definition.longName(), definition.shortName(), valueClass, createCompatibleParser(definition.parser(), valueClass),
+				createValidator(definition.validator()), definition.obligatory(), getDefaultValueFromAnnotation(definition),
+				definition.description(), definition.examples());
 	}
 
 	public ArgumentDefinition(@NotNull String longName, @NotNull String shortName, @NotNull Class<?> valueClass,
-			@NotNull Class<? extends ArgumentParser<?>> parserClass, @NotNull Class<? extends ArgumentValidator<?>> validatorClass,
-			boolean obligatory, @Nullable String defaultValue, @NotNull String description, @NotNull String[] examples) {
+			@NotNull ArgumentParser<?> parser, @NotNull ArgumentValidator<?> validator, boolean obligatory,
+			@Nullable String defaultValue, @NotNull String description, @NotNull String[] examples) {
 		super();
 
 		//Validates and sets the short name. The short name is can be null, because it's not obligatory.
@@ -67,11 +68,25 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		this.valueClass = valueClass;
 
 		//Validates and sets the parser class
-		this.parserClass = processParserClass(valueClass, parserClass);
+		if (parser == null) {
+			throw new ArgumentNullException();
+		}
+		if (!parser.isCompatible(valueClass)) {
+			throw new IllegalArgumentException("The argument definition could not been created, because the passed " +
+					"parser \"" + parser.getClass() + "\" is not compatible with the passed value class \"" + valueClass + "\"");
+		}
+		this.parser = parser;
 
-		//Validates and sets the validator class
-		validateValidatorClass(valueClass, validatorClass);
-		this.validatorClass = validatorClass;
+		if (validator == null) {
+			throw new ArgumentNullException();
+		}
+		//Tests if the validator is capable of validating the values of the passed value type.
+		if (!validator.isCompatible(valueClass)) {
+			throw new CommandLineException("The argument definition could not been created, because the passed validator class " +
+					"can only validate values of the class \"" + validator.getSupportedClass().getSimpleName() + "\" and does not " +
+					"validate instances of the passed value class \"" + valueClass.getSimpleName() + "\"");
+		}
+		this.validator = validator;
 
 		//Validates and sets the default value and it's obligatory flag
 		if (obligatory && defaultValue != null) {
@@ -106,13 +121,13 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 	}
 
 	@NotNull
-	public Class<? extends ArgumentParser<?>> getParserClass() {
-		return this.parserClass;
+	public ArgumentParser<?> getParser() {
+		return this.parser;
 	}
 
 	@NotNull
-	public Class<? extends ArgumentValidator<?>> getValidatorClass() {
-		return this.validatorClass;
+	public ArgumentValidator<?> getValidator() {
+		return this.validator;
 	}
 
 	public boolean isObligatory() {
@@ -148,8 +163,8 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 				"shortName='" + this.shortName + '\'' +
 				", longName='" + this.longName + '\'' +
 				", valueClass=" + this.valueClass +
-				", parserClass=" + this.parserClass +
-				", validatorClass=" + this.validatorClass +
+				", parser=" + this.parser +
+				", validator=" + this.validator +
 				", obligatory=" + this.obligatory +
 				", defaultValue='" + this.defaultValue + '\'' +
 				", description='" + this.description + '\'' +
@@ -157,6 +172,9 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 				'}';
 	}
 
+	/*
+	 * This equals method was modified
+	 */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -183,13 +201,13 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		if (!this.longName.equals(that.longName)) {
 			return false;
 		}
-		if (!this.parserClass.equals(that.parserClass)) {
+		if (!this.parser.getClass().equals(that.parser.getClass())) {
 			return false;
 		}
-		if (!this.shortName.equals(that.shortName)) {
+		if (this.shortName != null ? !this.shortName.equals(that.shortName) : that.shortName != null) {
 			return false;
 		}
-		if (!this.validatorClass.equals(that.validatorClass)) {
+		if (!this.validator.getClass().equals(that.validator.getClass())) {
 			return false;
 		}
 		if (!this.valueClass.equals(that.valueClass)) {
@@ -199,13 +217,16 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return true;
 	}
 
+	/*
+	 * This equals method was modified
+	 */
 	@Override
 	public int hashCode() {
-		int result = this.shortName.hashCode();
+		int result = this.shortName != null ? this.shortName.hashCode() : 0;
 		result = 31 * result + this.longName.hashCode();
 		result = 31 * result + this.valueClass.hashCode();
-		result = 31 * result + this.parserClass.hashCode();
-		result = 31 * result + this.validatorClass.hashCode();
+		result = 31 * result + this.parser.getClass().hashCode();
+		result = 31 * result + this.validator.getClass().hashCode();
 		result = 31 * result + (this.obligatory ? 1 : 0);
 		result = 31 * result + (this.defaultValue != null ? this.defaultValue.hashCode() : 0);
 		result = 31 * result + this.description.hashCode();
@@ -258,9 +279,40 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return processedDescription;
 	}
 
-	static void validateValidatorClass(@NotNull Class<?> valueClass, @NotNull Class<? extends ArgumentValidator<?>> validatorClass) {
-		ArgumentValidator<?> validator;
+	static ArgumentParser<?> createCompatibleParser(Class<? extends ArgumentParser<?>> parserClass, Class<?> valueClass) {
+		Class<? extends ArgumentParser<?>> compatibleParserClass;
 		String message;
+		ArgumentParser<?> parser;
+
+		if (parserClass == null) {
+			throw new ArgumentNullException();
+		}
+		if (valueClass == null) {
+			throw new ArgumentNullException();
+		}
+
+		if (parserClass == MockArgumentParser.class) {
+			compatibleParserClass = findCompatibleParser(valueClass);
+			if (compatibleParserClass == null) {
+				message = "The parser class could not been processed, because no compatible parser could been found for " +
+						"the passed value class \"" + valueClass.getSimpleName() + "\".";
+				throw new CommandLineException(message);
+			}
+		} else {
+			compatibleParserClass = parserClass;
+		}
+		//Tests if the parser is capable of parsing the values of the passed value type.
+		try {
+			parser = compatibleParserClass.newInstance();
+		} catch (@NotNull IllegalAccessException | InstantiationException e) {
+			throw new CommandLineException(e.getMessage(), e);
+		}
+
+		return parser;
+	}
+
+	static ArgumentValidator<?> createValidator(Class<? extends ArgumentValidator<?>> validatorClass) {
+		ArgumentValidator<?> validator;
 
 		if (validatorClass == null) {
 			throw new CommandLineException();
@@ -270,45 +322,8 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		} catch (IllegalAccessException | InstantiationException e) {
 			throw new CommandLineException(e.getMessage(), e);
 		}
-		//Tests if the validator is capable of validating the values of the passed value type.
-		if (!validator.isCompatible(valueClass)) {
-			message = "The validator class validation failed, because the passed validator class can only validate values " +
-					"of the class \"%s\" and does not validate instances of the passed value class \"%s\"";
-			message = String.format(message, validator.getSupportedClass().getSimpleName(), valueClass.getSimpleName());
-			throw new CommandLineException(message);
-		}
-	}
 
-	@NotNull
-	static Class<? extends ArgumentParser<?>> processParserClass(@NotNull Class<?> valueClass,
-			@Nullable Class<? extends ArgumentParser<?>> parserClass) {
-		Class<? extends ArgumentParser<?>> compatibleParserClass;
-		String message;
-		ArgumentParser<?> parser;
-
-		if (parserClass == null || parserClass == MockArgumentParser.class) {
-			compatibleParserClass = findCompatibleParser(valueClass);
-			if (compatibleParserClass == null) {
-				message = "The parser class could not been processed, because no compatible parser could been found for " +
-						"the passed value class \"" + valueClass.getSimpleName() + "\".";
-				throw new CommandLineException(message);
-			}
-		} else {
-			//Tests if the parser is capable of parsing the values of the passed value type.
-			try {
-				parser = parserClass.newInstance();
-			} catch (@NotNull IllegalAccessException | InstantiationException e) {
-				throw new CommandLineException(e.getMessage(), e);
-			}
-			if (!parser.isCompatible(valueClass)) {
-				message = "The parser class could not been processed, because the passed parser class \"" + parserClass +
-						"\" compatible with the passed value class \"" + valueClass.getSimpleName() + "\"";
-				throw new CommandLineException(message);
-			}
-			compatibleParserClass = parserClass;
-		}
-
-		return compatibleParserClass;
+		return validator;
 	}
 
 	@NotNull
@@ -410,7 +425,7 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 
 	@NotNull
 	public static ArgumentDefinition createMock() {
-		return new ArgumentDefinition("test-argument", "t", String.class, StringArgumentParser.class, DefaultArgumentValidator.class,
+		return new ArgumentDefinition("test-argument", "t", String.class, new StringArgumentParser(), new DefaultArgumentValidator(),
 				false, null, "This is a test argument.", new String[] {"Test example"});
 	}
 }

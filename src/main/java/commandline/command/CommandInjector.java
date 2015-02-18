@@ -90,7 +90,7 @@ public class CommandInjector {
 			extractedArgumentDefinition = methodDefinitionMap.get(longName);
 			if (!passedArgumentDefinition.equals(extractedArgumentDefinition)) {
 				throw new CommandLineException("The arguments couldn't be injected into the command, because the passed " +
-						"argument \"" + longName + "\" has an argument definition that doesn't correspond with the argument " +
+						"argument \"" + longName + "\" has an argument definition that doesn't match with the argument " +
 						"definition in the annotation of the setter of the command class.");
 			}
 			try {

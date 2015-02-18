@@ -48,8 +48,8 @@ public class CommandExecutorTest extends ExecutableCommand {
 		argumentDefinitionBuilder.setLongName(ExecutableCommand.ARGUMENT_HELP_LONG_NAME);
 		argumentDefinitionBuilder.setShortName(ExecutableCommand.ARGUMENT_HELP_SHORT_NAME);
 		argumentDefinitionBuilder.setValueClass(Boolean.class);
-		argumentDefinitionBuilder.setParserClass(BooleanArgumentParser.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setParser(new BooleanArgumentParser());
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
 		argumentDefinitionBuilder.setObligatory(ExecutableCommand.ARGUMENT_HELP_OBLIGATORY);
 		argumentDefinitionBuilder.setDefaultValue(ExecutableCommand.ARGUMENT_HELP_DEFAULT_VALUE);
 		argumentDefinitionBuilder.setDescription(ExecutableCommand.ARGUMENT_HELP_DESCRIPTION);
@@ -104,8 +104,8 @@ public class CommandExecutorTest extends ExecutableCommand {
 		argumentDefinitionBuilder.setLongName(ExecutableCommand.ARGUMENT_HELP_LONG_NAME);
 		argumentDefinitionBuilder.setShortName(ExecutableCommand.ARGUMENT_HELP_SHORT_NAME);
 		argumentDefinitionBuilder.setValueClass(Boolean.class);
-		argumentDefinitionBuilder.setParserClass(BooleanArgumentParser.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setParser(new BooleanArgumentParser());
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
 		argumentDefinitionBuilder.setObligatory(ExecutableCommand.ARGUMENT_HELP_OBLIGATORY);
 		argumentDefinitionBuilder.setDefaultValue(ExecutableCommand.ARGUMENT_HELP_DEFAULT_VALUE);
 		argumentDefinitionBuilder.setDescription(ExecutableCommand.ARGUMENT_HELP_DESCRIPTION);

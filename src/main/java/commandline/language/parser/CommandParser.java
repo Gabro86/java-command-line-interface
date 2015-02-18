@@ -6,7 +6,6 @@ import commandline.argument.GenericArgument;
 import commandline.command.Command;
 import commandline.command.CommandDefinition;
 import commandline.command.CommandDefinitionList;
-import commandline.command.CommandLineException;
 import commandline.command.ExecutableCommand;
 import commandline.command.GenericCommand;
 import commandline.exception.ArgumentNullException;
@@ -173,11 +172,7 @@ public class CommandParser {
 				genericArgumentValue = "true";
 			}
 
-			try {
-				argumentParser = definition.getParserClass().newInstance();
-			} catch (IllegalAccessException | InstantiationException e) {
-				throw new CommandLineException(e.getMessage(), e);
-			}
+			argumentParser = definition.getParser();
 			parsedValue = argumentParser.parse(genericArgumentValue);
 			typeSafeArgument = new Argument<>(definition, parsedValue);
 			typeSafeCommand.addArgument(typeSafeArgument);

@@ -3,7 +3,6 @@ package commandline.argument;
 import commandline.annotation.CliArgument;
 import commandline.annotation.MockCliArgument;
 import commandline.argument.validator.DefaultArgumentValidator;
-import commandline.argument.validator.MockInvalidArgumentValidator;
 import commandline.command.CommandLineException;
 import commandline.command.MockExecutableCommand;
 import commandline.exception.ArgumentNullException;
@@ -51,11 +50,11 @@ public class ArgumentDefinitionTest {
 		ArgumentDefinition definition;
 
 		definition = new ArgumentDefinition(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME,
-				MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME, String.class, MockArgumentParser.class,
-				DefaultArgumentValidator.class,
+				MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME, String.class, new StringArgumentParser(),
+				new DefaultArgumentValidator(),
 				MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY, MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE,
 				MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION, MockExecutableCommand.ARGUMENT_TEST_EXAMPLES);
-		assertEquals(StringArgumentParser.class, definition.getParserClass());
+		assertEquals(StringArgumentParser.class, definition.getParser().getClass());
 	}
 
 	@Test(expected = CommandLineException.class)
@@ -124,39 +123,21 @@ public class ArgumentDefinitionTest {
 	}
 
 	@Test
-	public void testProcessParserClass_MockParser() {
-		Class<? extends ArgumentParser<?>> parserClass;
+	public void testCreateCompatibleParser_MockParser() {
+		ArgumentParser<?> parser;
 
-		parserClass = ArgumentDefinition.processParserClass(String.class, MockArgumentParser.class);
-		assertEquals(StringArgumentParser.class, parserClass);
+		parser = ArgumentDefinition.createCompatibleParser(MockArgumentParser.class, String.class);
+		assertEquals(StringArgumentParser.class, parser.getClass());
+	}
+
+	@Test(expected = CommandLineException.class)
+	public void testCreateCompatibleParser_NoParserForValueClass() {
+		ArgumentDefinition.createCompatibleParser(MockArgumentParser.class, Object.class);
 	}
 
 	@Test
-	public void testProcessParserClass_NullParser() {
-		Class<? extends ArgumentParser<?>> parserClass;
-
-		parserClass = ArgumentDefinition.processParserClass(String.class, null);
-		assertEquals(StringArgumentParser.class, parserClass);
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testProcessParserClass_NoParserForValueClass() {
-		ArgumentDefinition.processParserClass(Object.class, null);
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testProcessParserClass_ValueClassNotCompatibleWithParser() {
-		ArgumentDefinition.processParserClass(String.class, IntegerArgumentParser.class);
-	}
-
-	@Test
-	public void testValidateValidatorClass() {
-		ArgumentDefinition.validateValidatorClass(String.class, DefaultArgumentValidator.class);
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testValidateValidatorClass_TypeNotCompatibleWithValidator() {
-		ArgumentDefinition.validateValidatorClass(String.class, MockInvalidArgumentValidator.class);
+	public void testCreateValidator() {
+		ArgumentDefinition.createValidator(DefaultArgumentValidator.class);
 	}
 
 	@Test
@@ -370,11 +351,11 @@ public class ArgumentDefinitionTest {
 			assertEquals(annotation.defaultValue(), definition.getDefaultValue());
 		}
 		if (annotation.parser() == MockArgumentParser.class) {
-			assertNotNull(definition.getParserClass());
+			assertNotNull(definition.getParser());
 		} else {
-			assertEquals(annotation.parser(), definition.getParserClass());
+			assertEquals(annotation.parser(), definition.getParser().getClass());
 		}
-		assertEquals(annotation.validator(), definition.getValidatorClass());
+		assertEquals(annotation.validator(), definition.getValidator().getClass());
 		assertEquals(annotation.description(), definition.getDescription());
 		assertArrayEquals(annotation.examples(), definition.getExamples());
 	}

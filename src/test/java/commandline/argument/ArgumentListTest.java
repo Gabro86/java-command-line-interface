@@ -64,8 +64,8 @@ public class ArgumentListTest {
 		builder.setDescription("description");
 		builder.setObligatory(false);
 		builder.setDefaultValue("default-value");
-		builder.setParserClass(StringArgumentParser.class);
-		builder.setValidatorClass(DefaultArgumentValidator.class);
+		builder.setParser(new StringArgumentParser());
+		builder.setValidator(new DefaultArgumentValidator());
 		builder.setValueClass(String.class);
 		definition1 = builder.create();
 

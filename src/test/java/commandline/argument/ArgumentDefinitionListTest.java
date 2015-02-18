@@ -52,10 +52,10 @@ public class ArgumentDefinitionListTest {
 		ArgumentDefinition definition2;
 		LinkedList<ArgumentDefinition> definitionList;
 
-		definition1 = new ArgumentDefinition("test-argument1", "a", String.class, StringArgumentParser.class,
-				DefaultArgumentValidator.class, false, null, "This is a test argument 1.", new String[] {"Test example 1"});
-		definition2 = new ArgumentDefinition("test-argument2", "b", String.class, StringArgumentParser.class,
-				DefaultArgumentValidator.class, false, null, "This is a test argument 2.", new String[] {"Test example 2"});
+		definition1 = new ArgumentDefinition("test-argument1", "a", String.class, new StringArgumentParser(),
+				new DefaultArgumentValidator(), false, null, "This is a test argument 1.", new String[] {"Test example 1"});
+		definition2 = new ArgumentDefinition("test-argument2", "b", String.class, new StringArgumentParser(),
+				new DefaultArgumentValidator(), false, null, "This is a test argument 2.", new String[] {"Test example 2"});
 		definitionList = new LinkedList<>();
 		definitionList.add(definition1);
 		definitionList.add(definition2);
@@ -73,10 +73,10 @@ public class ArgumentDefinitionListTest {
 		ArgumentDefinition definition2;
 		LinkedList<ArgumentDefinition> definitionList;
 
-		definition1 = new ArgumentDefinition("test-argument", "a", String.class, StringArgumentParser.class,
-				DefaultArgumentValidator.class, false, null, "This is a test argument.", new String[] {"Test example"});
-		definition2 = new ArgumentDefinition("test-argument", "a", String.class, StringArgumentParser.class,
-				DefaultArgumentValidator.class, false, null, "This is a test argument.", new String[] {"Test example"});
+		definition1 = new ArgumentDefinition("test-argument", "a", String.class, new StringArgumentParser(),
+				new DefaultArgumentValidator(), false, null, "This is a test argument.", new String[] {"Test example"});
+		definition2 = new ArgumentDefinition("test-argument", "a", String.class, new StringArgumentParser(),
+				new DefaultArgumentValidator(), false, null, "This is a test argument.", new String[] {"Test example"});
 		definitionList = new LinkedList<>();
 		definitionList.add(definition1);
 		definitionList.add(definition2);
@@ -224,10 +224,10 @@ public class ArgumentDefinitionListTest {
 		ArgumentDefinition definition2;
 		Collection<ArgumentDefinition> definitionList;
 
-		definition1 = new ArgumentDefinition("test-argument1", "a", String.class, StringArgumentParser.class,
-				DefaultArgumentValidator.class, false, null, "This is a test argument 1.", new String[] {"Test example 1"});
-		definition2 = new ArgumentDefinition("test-argument2", "b", String.class, StringArgumentParser.class,
-				DefaultArgumentValidator.class, false, null, "This is a test argument 2.", new String[] {"Test example 2"});
+		definition1 = new ArgumentDefinition("test-argument1", "a", String.class, new StringArgumentParser(),
+				new DefaultArgumentValidator(), false, null, "This is a test argument 1.", new String[] {"Test example 1"});
+		definition2 = new ArgumentDefinition("test-argument2", "b", String.class, new StringArgumentParser(),
+				new DefaultArgumentValidator(), false, null, "This is a test argument 2.", new String[] {"Test example 2"});
 		definitions = new ArgumentDefinitionList();
 		definitions.add(definition1);
 		definitions.add(definition2);

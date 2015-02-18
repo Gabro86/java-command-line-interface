@@ -15,8 +15,8 @@ public class ArgumentDefinitionBuilderTest {
 		String shortName;
 		String longName;
 		Class<?> valueClass;
-		Class<? extends ArgumentParser<?>> parserClass;
-		Class<? extends ArgumentValidator<?>> validatorClass;
+		ArgumentParser<?> parser;
+		ArgumentValidator<?> validator;
 		boolean obligatory;
 		String defaultValue;
 		String description;
@@ -27,22 +27,22 @@ public class ArgumentDefinitionBuilderTest {
 		shortName = "a";
 		longName = "mock-argument";
 		valueClass = String.class;
-		parserClass = StringArgumentParser.class;
-		validatorClass = DefaultArgumentValidator.class;
+		parser = new StringArgumentParser();
+		validator = new DefaultArgumentValidator();
 		obligatory = true;
 		defaultValue = null;
 		description = "This is an example description.";
 		examples = new String[] {"example1", "example2"};
 
-		expectedArgument = new ArgumentDefinition(longName, shortName, valueClass, parserClass, validatorClass, obligatory,
-				defaultValue, description, examples);
+		expectedArgument = new ArgumentDefinition(longName, shortName, valueClass, parser, validator, obligatory, defaultValue,
+				description, examples);
 
 		builder = new ArgumentDefinitionBuilder();
 		builder.setShortName(shortName);
 		builder.setLongName(longName);
 		builder.setValueClass(valueClass);
-		builder.setParserClass(parserClass);
-		builder.setValidatorClass(validatorClass);
+		builder.setParser(parser);
+		builder.setValidator(validator);
 		builder.setObligatory(obligatory);
 		builder.setDefaultValue(defaultValue);
 		builder.setDescription(description);

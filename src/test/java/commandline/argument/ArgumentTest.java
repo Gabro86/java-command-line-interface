@@ -18,7 +18,7 @@ public class ArgumentTest {
 	public void testConstructor() {
 		ArgumentDefinition definition;
 
-		definition = new ArgumentDefinition("longName", "s", String.class, StringArgumentParser.class, DefaultArgumentValidator.class,
+		definition = new ArgumentDefinition("longName", "s", String.class, new StringArgumentParser(), new DefaultArgumentValidator(),
 				true, null, "description", new String[] {"example"});
 		new Argument<>(definition, "value");
 	}
@@ -28,7 +28,7 @@ public class ArgumentTest {
 	public void testConstructor_ValueClassMismatch() {
 		ArgumentDefinition definition;
 
-		definition = new ArgumentDefinition("longName", "s", String.class, StringArgumentParser.class, DefaultArgumentValidator.class,
+		definition = new ArgumentDefinition("longName", "s", String.class, new StringArgumentParser(), new DefaultArgumentValidator(),
 				true, null, "description", new String[] {"example"});
 		new Argument<>(definition, new Object());
 	}

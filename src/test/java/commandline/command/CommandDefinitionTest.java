@@ -23,8 +23,8 @@ public class CommandDefinitionTest {
 		argumentDefinitionBuilder.setShortName(ValidTestCommand.ARGUMENT_1_SHORT_NAME);
 		argumentDefinitionBuilder.setLongName(ValidTestCommand.ARGUMENT_1_LONG_NAME);
 		argumentDefinitionBuilder.setObligatory(true);
-		argumentDefinitionBuilder.setParserClass(StringArgumentParser.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setParser(new StringArgumentParser());
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
 		argumentDefinitionBuilder.setDescription(ValidTestCommand.COMMAND_DESCRIPTION);
 		argumentDefinitionBuilder.setExamples(ValidTestCommand.ARGUMENT_HELP_EXAMPLES);
 		argumentDefinition = argumentDefinitionBuilder.create();

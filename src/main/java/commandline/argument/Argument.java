@@ -19,11 +19,10 @@ public class Argument<ValueType> {
 	private final ValueType value;
 
 	public Argument(@NotNull String longName, @NotNull String shortName, @NotNull Class<?> valueClass,
-			@NotNull Class<? extends ArgumentParser<?>> parserClass, @NotNull Class<? extends ArgumentValidator<?>> validatorClass,
-			boolean obligatory, @Nullable String defaultValue, @NotNull String description, @NotNull String[] examples,
-			@Nullable ValueType value) {
-		this(new ArgumentDefinition(longName, shortName, valueClass, parserClass, validatorClass, obligatory, defaultValue,
-				description, examples), value);
+			@NotNull ArgumentParser<?> parser, @NotNull ArgumentValidator<?> validator, boolean obligatory,
+			@Nullable String defaultValue, @NotNull String description, @NotNull String[] examples, @Nullable ValueType value) {
+		this(new ArgumentDefinition(longName, shortName, valueClass, parser, validator, obligatory, defaultValue, description,
+				examples), value);
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -63,8 +62,8 @@ public class Argument<ValueType> {
 	}
 
 	@NotNull
-	public Class<? extends ArgumentParser<?>> getParser() {
-		return getDefinition().getParserClass();
+	public ArgumentParser<?> getParser() {
+		return getDefinition().getParser();
 	}
 
 	public boolean isObligatory() {
@@ -145,11 +144,7 @@ public class Argument<ValueType> {
 						"class \"" + valueClassFromDefinition.getSimpleName() + "\" defined in the argument definition.");
 			}
 		}
-		try {
-			validator = definition.getValidatorClass().newInstance();
-		} catch (IllegalAccessException | InstantiationException e) {
-			throw new CommandLineException(e.getMessage(), e);
-		}
+		validator = definition.getValidator();
 		validator.validate(value);
 	}
 
@@ -158,7 +153,7 @@ public class Argument<ValueType> {
 		Argument<String> argument;
 		ArgumentDefinition definition;
 
-		definition = new ArgumentDefinition("longName", "s", String.class, StringArgumentParser.class, DefaultArgumentValidator.class,
+		definition = new ArgumentDefinition("longName", "s", String.class, new StringArgumentParser(), new DefaultArgumentValidator(),
 				true, null, "description", new String[] {"example"});
 		argument = new Argument<>(definition, "test-value");
 

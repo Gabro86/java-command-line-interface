@@ -18,9 +18,9 @@ public class ArgumentDefinitionBuilder {
 	@NotNull
 	private Class<?> valueClass;
 	@NotNull
-	private Class<? extends ArgumentParser<?>> parserClass;
+	private ArgumentParser<?> parser;
 	@NotNull
-	private Class<? extends ArgumentValidator<?>> validatorClass;
+	private ArgumentValidator<?> validator;
 	private boolean obligatory;
 	@Nullable
 	private String defaultValue;
@@ -34,8 +34,8 @@ public class ArgumentDefinitionBuilder {
 		setShortName(null);
 		setLongName("mock-name");
 		setValueClass(String.class);
-		setParserClass(StringArgumentParser.class);
-		setValidatorClass(DefaultArgumentValidator.class);
+		setParser(new StringArgumentParser());
+		setValidator(new DefaultArgumentValidator());
 		setObligatory(true);
 		setDefaultValue(null);
 		setDescription("mock-description");
@@ -70,21 +70,21 @@ public class ArgumentDefinitionBuilder {
 	}
 
 	@NotNull
-	public Class<? extends ArgumentParser<?>> getParserClass() {
-		return this.parserClass;
+	public ArgumentParser<?> getParser() {
+		return this.parser;
 	}
 
-	public void setParserClass(@NotNull Class<? extends ArgumentParser<?>> parserClass) {
-		this.parserClass = parserClass;
+	public void setParser(@NotNull ArgumentParser<?> parser) {
+		this.parser = parser;
 	}
 
 	@NotNull
-	public Class<? extends ArgumentValidator<?>> getValidatorClass() {
-		return this.validatorClass;
+	public ArgumentValidator<?> getValidator() {
+		return this.validator;
 	}
 
-	public void setValidatorClass(@NotNull Class<? extends ArgumentValidator<?>> validatorClass) {
-		this.validatorClass = validatorClass;
+	public void setValidator(@NotNull ArgumentValidator<?> validator) {
+		this.validator = validator;
 	}
 
 	public boolean isObligatory() {
@@ -124,7 +124,7 @@ public class ArgumentDefinitionBuilder {
 
 	@NotNull
 	public ArgumentDefinition create() {
-		return new ArgumentDefinition(getLongName(), getShortName(), getValueClass(), getParserClass(), getValidatorClass(),
-				isObligatory(), getDefaultValue(), getDescription(), getExamples());
+		return new ArgumentDefinition(getLongName(), getShortName(), getValueClass(), getParser(), getValidator(), isObligatory(),
+				getDefaultValue(), getDescription(), getExamples());
 	}
 }

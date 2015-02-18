@@ -17,7 +17,9 @@ public abstract class ExecutableCommand {
 	public static final boolean ARGUMENT_HELP_OBLIGATORY = false;
 	public static final String ARGUMENT_HELP_DEFAULT_VALUE = "false";
 	public static final Class<BooleanArgumentParser> ARGUMENT_PARSER_CLASS = BooleanArgumentParser.class;
+	public static final BooleanArgumentParser ARGUMENT_PARSER = new BooleanArgumentParser();
 	public static final Class<DefaultArgumentValidator> ARGUMENT_VALIDATOR_CLASS = DefaultArgumentValidator.class;
+	public static final DefaultArgumentValidator ARGUMENT_VALIDATOR = new DefaultArgumentValidator();
 	public static final Class<Boolean> ARGUMENT_VALUE_CLASS = Boolean.class;
 	public static final String ARGUMENT_HELP_EXAMPLE1 = "false";
 	public static final String ARGUMENT_HELP_EXAMPLE2 = "true";

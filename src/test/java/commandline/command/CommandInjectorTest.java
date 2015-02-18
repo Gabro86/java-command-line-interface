@@ -32,8 +32,8 @@ public class CommandInjectorTest {
 		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
 		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
 		argumentDefinitionBuilder.setValueClass(MockExecutableCommand.ARGUMENT_TEST_VALUE_CLASS);
-		argumentDefinitionBuilder.setParserClass(MockExecutableCommand.ARGUMENT_TEST_PARSER);
-		argumentDefinitionBuilder.setValidatorClass(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
+		argumentDefinitionBuilder.setParser(MockExecutableCommand.ARGUMENT_TEST_PARSER);
+		argumentDefinitionBuilder.setValidator(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
 		argumentDefinitionBuilder.setObligatory(MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY);
 		argumentDefinitionBuilder.setDefaultValue(MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE);
 		argumentDefinitionBuilder.setDescription(MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION);
@@ -65,8 +65,8 @@ public class CommandInjectorTest {
 		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
 		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
 		argumentDefinitionBuilder.setValueClass(MockExecutableCommand.ARGUMENT_TEST_VALUE_CLASS);
-		argumentDefinitionBuilder.setParserClass(MockExecutableCommand.ARGUMENT_TEST_PARSER);
-		argumentDefinitionBuilder.setValidatorClass(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
+		argumentDefinitionBuilder.setParser(MockExecutableCommand.ARGUMENT_TEST_PARSER);
+		argumentDefinitionBuilder.setValidator(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
 		argumentDefinitionBuilder.setObligatory(MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY);
 		argumentDefinitionBuilder.setDefaultValue(MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE);
 		argumentDefinitionBuilder.setDescription(MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION);
@@ -95,8 +95,8 @@ public class CommandInjectorTest {
 		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
 		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
 		argumentDefinitionBuilder.setValueClass(Integer.class);
-		argumentDefinitionBuilder.setParserClass(IntegerArgumentParser.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setParser(new IntegerArgumentParser());
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
 		argumentDefinitionBuilder.setObligatory(false);
 		argumentDefinitionBuilder.setDefaultValue("100");
 		argumentDefinitionBuilder.setDescription("This is some random description.");
@@ -125,8 +125,8 @@ public class CommandInjectorTest {
 		argumentDefinitionBuilder.setLongName("random-long-name");
 		argumentDefinitionBuilder.setShortName("r");
 		argumentDefinitionBuilder.setValueClass(Integer.class);
-		argumentDefinitionBuilder.setParserClass(IntegerArgumentParser.class);
-		argumentDefinitionBuilder.setValidatorClass(DefaultArgumentValidator.class);
+		argumentDefinitionBuilder.setParser(new IntegerArgumentParser());
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
 		argumentDefinitionBuilder.setObligatory(false);
 		argumentDefinitionBuilder.setDefaultValue("100");
 		argumentDefinitionBuilder.setDescription("This is some random description.");
@@ -158,8 +158,8 @@ public class CommandInjectorTest {
 		argumentDefinitionBuilder.setLongName(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME);
 		argumentDefinitionBuilder.setShortName(MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME);
 		argumentDefinitionBuilder.setValueClass(MockExecutableCommand.ARGUMENT_TEST_VALUE_CLASS);
-		argumentDefinitionBuilder.setParserClass(MockExecutableCommand.ARGUMENT_TEST_PARSER);
-		argumentDefinitionBuilder.setValidatorClass(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
+		argumentDefinitionBuilder.setParser(MockExecutableCommand.ARGUMENT_TEST_PARSER);
+		argumentDefinitionBuilder.setValidator(MockExecutableCommand.ARGUMENT_TEST_VALIDATOR);
 		argumentDefinitionBuilder.setObligatory(MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY);
 		argumentDefinitionBuilder.setDefaultValue(MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE);
 		argumentDefinitionBuilder.setDescription(MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION);

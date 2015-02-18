@@ -18,8 +18,10 @@ public class MockExecutableCommand extends ExecutableCommand {
 	public static final String ARGUMENT_TEST_LONG_NAME = "test-key";
 	public static final String ARGUMENT_TEST_SHORT_NAME = "t";
 	public static final Class<String> ARGUMENT_TEST_VALUE_CLASS = String.class;
-	public static final Class<StringArgumentParser> ARGUMENT_TEST_PARSER = StringArgumentParser.class;
-	public static final Class<DefaultArgumentValidator> ARGUMENT_TEST_VALIDATOR = DefaultArgumentValidator.class;
+	public static final Class<StringArgumentParser> ARGUMENT_TEST_PARSER_CLASS = StringArgumentParser.class;
+	public static final StringArgumentParser ARGUMENT_TEST_PARSER = new StringArgumentParser();
+	public static final Class<DefaultArgumentValidator> ARGUMENT_TEST_VALIDATOR_CLASS = DefaultArgumentValidator.class;
+	public static final DefaultArgumentValidator ARGUMENT_TEST_VALIDATOR = new DefaultArgumentValidator();
 	public static final boolean ARGUMENT_TEST_OBLIGATORY = true;
 	public static final String ARGUMENT_TEST_DEFAULT_VALUE = null;
 	public static final String ARGUMENT_TEST_DESCRIPTION = "This is a description.";
