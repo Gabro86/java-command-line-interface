@@ -15,6 +15,11 @@ public class UrlArgumentParser extends ArgumentParser<URL> {
 		super();
 	}
 
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(URL.class);
+	}
+
 	@NotNull
 	@Override
 	public URL parse(@NotNull String value) {
@@ -23,11 +28,5 @@ public class UrlArgumentParser extends ArgumentParser<URL> {
 		} catch (MalformedURLException e) {
 			throw new ArgumentParseException(e.getMessage(), e);
 		}
-	}
-
-	@NotNull
-	@Override
-	public Class<URL> getValueClass() {
-		return URL.class;
 	}
 }

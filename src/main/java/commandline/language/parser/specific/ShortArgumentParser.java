@@ -13,6 +13,11 @@ public class ShortArgumentParser extends ArgumentParser<Short> {
 		super();
 	}
 
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(short.class) || clazz.isAssignableFrom(Short.class);
+	}
+
 	@NotNull
 	@Override
 	public Short parse(@NotNull String value) {
@@ -24,11 +29,5 @@ public class ShortArgumentParser extends ArgumentParser<Short> {
 		} catch (Exception e) {
 			throw new ArgumentParseException(e.getMessage(), e);
 		}
-	}
-
-	@NotNull
-	@Override
-	public Class<Short> getValueClass() {
-		return Short.class;
 	}
 }

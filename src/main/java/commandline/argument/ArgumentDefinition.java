@@ -301,9 +301,8 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 				throw new CommandLineException(e.getMessage(), e);
 			}
 			if (!parser.isCompatible(valueClass)) {
-				message = "The parser class could not been processed, because the passed parser class creates instances from the " +
-						"class \"%s\" that are not compatible with the passed value class \"%s\"";
-				message = String.format(message, parser.getValueClass().getSimpleName(), valueClass.getSimpleName());
+				message = "The parser class could not been processed, because the passed parser class \"" + parserClass +
+						"\" compatible with the passed value class \"" + valueClass.getSimpleName() + "\"";
 				throw new CommandLineException(message);
 			}
 			compatibleParserClass = parserClass;

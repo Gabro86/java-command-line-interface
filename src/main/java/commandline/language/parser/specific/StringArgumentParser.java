@@ -8,6 +8,11 @@ import org.jetbrains.annotations.NotNull;
  * User: gno Date: 25.06.13 Time: 15:57
  */
 public class StringArgumentParser extends ArgumentParser<String> {
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(String.class);
+	}
+
 	@NotNull
 	@Override
 	public String parse(@NotNull String value) {
@@ -15,11 +20,5 @@ public class StringArgumentParser extends ArgumentParser<String> {
 			throw new ArgumentNullException();
 		}
 		return value;
-	}
-
-	@NotNull
-	@Override
-	public Class<String> getValueClass() {
-		return String.class;
 	}
 }

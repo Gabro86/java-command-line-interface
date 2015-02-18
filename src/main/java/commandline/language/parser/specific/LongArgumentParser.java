@@ -13,6 +13,11 @@ public class LongArgumentParser extends ArgumentParser<Long> {
 		super();
 	}
 
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(long.class) || clazz.isAssignableFrom(Long.class);
+	}
+
 	@NotNull
 	@Override
 	public Long parse(@NotNull String value) {
@@ -24,11 +29,5 @@ public class LongArgumentParser extends ArgumentParser<Long> {
 		} catch (Exception e) {
 			throw new ArgumentParseException(e.getMessage(), e);
 		}
-	}
-
-	@NotNull
-	@Override
-	public Class<Long> getValueClass() {
-		return Long.class;
 	}
 }

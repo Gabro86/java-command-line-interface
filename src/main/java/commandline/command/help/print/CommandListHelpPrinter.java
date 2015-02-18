@@ -78,7 +78,8 @@ public class CommandListHelpPrinter extends HelpPrinter {
 		writer = new PrintWriter(getOutputStream());
 		writer.println(headerTable.render());
 		writer.println(argumentsTable.render());
-		writer.println("Use help -c <command-name> to show more information of a specific command.");
+		writer.println("Execute \"help -c <command-name>\" to show more information of a specific command or use the " +
+				"flag \"--help\" or \"-h\" when executing the command, e.g. \"add-browser -h\"");
 		writer.flush();
 		writer.close();
 	}

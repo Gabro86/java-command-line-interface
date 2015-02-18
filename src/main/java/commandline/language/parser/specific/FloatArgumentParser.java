@@ -13,6 +13,11 @@ public class FloatArgumentParser extends ArgumentParser<Float> {
 		super();
 	}
 
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(float.class) || clazz.isAssignableFrom(Float.class);
+	}
+
 	@NotNull
 	@Override
 	public Float parse(@NotNull String value) {
@@ -24,11 +29,5 @@ public class FloatArgumentParser extends ArgumentParser<Float> {
 		} catch (Exception e) {
 			throw new ArgumentParseException(e.getMessage(), e);
 		}
-	}
-
-	@NotNull
-	@Override
-	public Class<Float> getValueClass() {
-		return Float.class;
 	}
 }

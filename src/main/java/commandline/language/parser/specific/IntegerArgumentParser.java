@@ -13,6 +13,11 @@ public class IntegerArgumentParser extends ArgumentParser<Integer> {
 		super();
 	}
 
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(int.class) || clazz.isAssignableFrom(Integer.class);
+	}
+
 	@NotNull
 	@Override
 	public Integer parse(@NotNull String value) {
@@ -24,11 +29,5 @@ public class IntegerArgumentParser extends ArgumentParser<Integer> {
 		} catch (Exception e) {
 			throw new ArgumentParseException(e.getMessage(), e);
 		}
-	}
-
-	@NotNull
-	@Override
-	public Class<Integer> getValueClass() {
-		return Integer.class;
 	}
 }

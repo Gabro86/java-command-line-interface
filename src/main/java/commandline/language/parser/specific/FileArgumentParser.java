@@ -10,6 +10,11 @@ import java.io.File;
  * User: gno Date: 25.06.13 Time: 16:16
  */
 public class FileArgumentParser extends ArgumentParser<File> {
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(File.class);
+	}
+
 	@NotNull
 	@Override
 	public File parse(@NotNull String value) {
@@ -17,11 +22,5 @@ public class FileArgumentParser extends ArgumentParser<File> {
 			throw new ArgumentNullException();
 		}
 		return new File(String.valueOf(value));
-	}
-
-	@NotNull
-	@Override
-	public Class<File> getValueClass() {
-		return File.class;
 	}
 }

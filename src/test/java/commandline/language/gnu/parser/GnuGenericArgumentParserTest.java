@@ -1,12 +1,12 @@
 package commandline.language.gnu.parser;
 
 import commandline.argument.GenericArgument;
-import commandline.command.CommandLineException;
 import commandline.command.GenericCommand;
 import commandline.language.syntax.SyntaxException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * User: gno, Date: 26.07.13 - 15:36
@@ -139,16 +139,18 @@ public class GnuGenericArgumentParserTest {
 		parser.parse(arguments);
 	}
 
-	@Test(expected = SyntaxException.class)
-	public void testParse_Fail_NoArgumentValue() throws Exception {
+	@Test
+	public void testParse_Success_NoArgumentValue() throws Exception {
 		GnuGenericCommandParser parser;
 		String cliCommand;
 		String[] arguments;
+		GenericCommand command;
 
 		parser = new GnuGenericCommandParser();
 		cliCommand = "command --key";
 		arguments = cliCommand.split(" ");
-		parser.parse(arguments);
+		command = parser.parse(arguments);
+		assertTrue(command.getArgument("key").getValue().isEmpty());
 	}
 
 	@Test(expected = SyntaxException.class)
@@ -175,19 +177,26 @@ public class GnuGenericArgumentParserTest {
 		parser.parse(arguments);
 	}
 
-	@Test(expected = SyntaxException.class)
-	public void testParse_Fail_MultipleValues() throws Exception {
+	@Test
+	public void testParse_Success_MultipleValues() throws Exception {
 		GnuGenericCommandParser parser;
 		String cliCommand;
 		String[] arguments;
+		GenericCommand command;
+		GenericArgument argumentBefore;
+		GenericArgument argumentAfter;
 
 		parser = new GnuGenericCommandParser();
-		cliCommand = "command --key value1 value2";
+		cliCommand = "command --test-argument value1 value2";
 		arguments = cliCommand.split(" ");
-		parser.parse(arguments);
+		command = parser.parse(arguments);
+
+		argumentBefore = new GenericArgument("test-argument", "value1 value2");
+		argumentAfter = command.getArgument("test-argument");
+		assertEquals(argumentBefore, argumentAfter);
 	}
 
-	@Test(expected = CommandLineException.class)
+	@Test
 	public void testParse_Success_ArgumentsWithNoValues() throws Exception {
 		GenericCommand command;
 		GnuGenericCommandParser parser;
@@ -202,12 +211,12 @@ public class GnuGenericArgumentParserTest {
 		command = parser.parse(arguments);
 		argument1 = command.getArgument("key1");
 		argument2 = command.getArgument("key2");
-		assertEquals(null, argument1.getValue());
-		assertEquals(null, argument2.getValue());
+		assertTrue(argument1.getValue().isEmpty());
+		assertTrue(argument2.getValue().isEmpty());
 	}
 
-	@Test(expected = CommandLineException.class)
-	public void testParse_Fail_NotAllArgumentsHaveValues() throws Exception {
+	@Test
+	public void testParse_Success_NotAllArgumentsHaveValues() throws Exception {
 		GenericCommand command;
 		GnuGenericCommandParser parser;
 		String cliCommand;
@@ -222,7 +231,7 @@ public class GnuGenericArgumentParserTest {
 		argument1 = command.getArgument("key1");
 		argument2 = command.getArgument("key2");
 		assertEquals("value", argument1.getValue());
-		assertEquals(null, argument2.getValue());
+		assertTrue(argument2.getValue().isEmpty());
 	}
 
 	@Test

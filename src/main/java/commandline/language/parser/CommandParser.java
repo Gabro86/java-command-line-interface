@@ -6,6 +6,7 @@ import commandline.argument.GenericArgument;
 import commandline.command.Command;
 import commandline.command.CommandDefinition;
 import commandline.command.CommandDefinitionList;
+import commandline.command.CommandLineException;
 import commandline.command.ExecutableCommand;
 import commandline.command.GenericCommand;
 import commandline.exception.ArgumentNullException;
@@ -59,6 +60,9 @@ public class CommandParser {
 		String commandName;
 		Command typeSafeCommand;
 		CommandDefinition commandDefinition;
+		ArgumentParser<?> argumentParser;
+		Object parsedValue;
+		String genericArgumentValue;
 
 		if (cliArguments == null) {
 			throw new ArgumentNullException();
@@ -100,9 +104,10 @@ public class CommandParser {
 		} else {
 			genericArgument = shortGenericArgument;
 		}
+
 		if (genericArgument != null) {
 			helpArgumentDefinition = commandDefinition.getArgumentDefinition(genericArgument.getName());
-			typeSafeArgument = Argument.parse(helpArgumentDefinition, genericArgument.getValue());
+			typeSafeArgument = new Argument<>(helpArgumentDefinition, Boolean.parseBoolean(genericArgument.getValue()));
 			typeSafeCommand = new Command(commandDefinition);
 			typeSafeCommand.addArgument(typeSafeArgument);
 			return typeSafeCommand;
@@ -158,7 +163,23 @@ public class CommandParser {
 			} else {
 				genericArgument = shortGenericArgument;
 			}
-			typeSafeArgument = Argument.parse(definition, genericArgument.getValue());
+
+			/*
+			 * The argument value can be omitted on boolean arguments (flags). A missing argument value on a boolean argument is
+			 * interpreted as the argument value "true".
+			 */
+			genericArgumentValue = genericArgument.getValue().trim();
+			if (genericArgumentValue.isEmpty() && definition.getValueClass().equals(Boolean.class)) {
+				genericArgumentValue = "true";
+			}
+
+			try {
+				argumentParser = definition.getParserClass().newInstance();
+			} catch (IllegalAccessException | InstantiationException e) {
+				throw new CommandLineException(e.getMessage(), e);
+			}
+			parsedValue = argumentParser.parse(genericArgumentValue);
+			typeSafeArgument = new Argument<>(definition, parsedValue);
 			typeSafeCommand.addArgument(typeSafeArgument);
 		}
 

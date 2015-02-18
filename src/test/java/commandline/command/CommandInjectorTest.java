@@ -172,7 +172,6 @@ public class CommandInjectorTest {
 		commandDefinitionBuilder = new CommandDefinitionBuilder();
 		commandDefinitionBuilder.setName(MockExecutableCommand.COMMAND_NAME);
 		commandDefinitionBuilder.setDescription(MockExecutableCommand.COMMAND_DESCRIPTION);
-		commandDefinitionBuilder.setArgumentInjectionEnabled(true);
 		commandDefinitionBuilder.setCommandToExecute(commandToInject);
 		commandDefinitionBuilder.addArgument(argumentDefinition);
 		commandDefinition = commandDefinitionBuilder.create();

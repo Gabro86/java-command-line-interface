@@ -8,6 +8,9 @@ import commandline.language.parser.GenericCommandParser;
 import commandline.language.syntax.CommandSyntaxValidator;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * User: gno, Date: 06.01.2015 - 16:02
  */
@@ -19,11 +22,16 @@ public class GnuGenericCommandParser implements GenericCommandParser {
 	@NotNull
 	@Override
 	public GenericCommand parse(@NotNull String[] cliArguments) {
-		String value;
 		String name;
-		GenericArgument argument;
 		GenericCommand command;
 		CommandSyntaxValidator syntaxValidator;
+		String cliArgument;
+		String commandName;
+		HashMap<String, StringBuilder> argumentMap;
+		StringBuilder values;
+		GenericArgument genericArgument;
+		String argumentName;
+		String argumentValue;
 
 		if (cliArguments == null) {
 			throw new ArgumentNullException();
@@ -32,13 +40,31 @@ public class GnuGenericCommandParser implements GenericCommandParser {
 		syntaxValidator = new GnuCommandSyntaxValidator();
 		syntaxValidator.validate(cliArguments);
 
-		command = new GenericCommand(cliArguments[0]);
-		//Parses the argument represented by key-value pairs
-		for (int i = 1; i < cliArguments.length - 1; i += 2) {
-			name = removePrefix(cliArguments[i]);
-			value = cliArguments[i + 1];
-			argument = new GenericArgument(name, value);
-			command.addArgument(argument);
+		values = new StringBuilder();
+		argumentMap = new HashMap<>();
+		for (int i = 1; i < cliArguments.length; i++) {
+			//The arguments must not be validated since the syntax of the cli arguments have been already validated.
+			cliArgument = cliArguments[i].trim();
+			if (isArgumentName(cliArgument)) {
+				name = removePrefix(cliArgument);
+				values = new StringBuilder();
+				argumentMap.put(name, values);
+			} else {
+				if (values.length() > 0) {
+					values.append(" ");
+				}
+				values.append(cliArgument);
+			}
+		}
+
+		//The command name must not be validated since the syntax of the cli arguments have been already validated.
+		commandName = cliArguments[0];
+		command = new GenericCommand(commandName);
+		for (Map.Entry<String, StringBuilder> entry : argumentMap.entrySet()) {
+			argumentName = entry.getKey();
+			argumentValue = entry.getValue().toString();
+			genericArgument = new GenericArgument(argumentName, argumentValue);
+			command.addArgument(genericArgument);
 		}
 
 		return command;
@@ -60,5 +86,12 @@ public class GnuGenericCommandParser implements GenericCommandParser {
 		}
 
 		return editValue;
+	}
+
+	boolean isArgumentName(@NotNull String value) {
+		if (value == null) {
+			throw new ArgumentNullException();
+		}
+		return value.startsWith("--") || value.startsWith("-");
 	}
 }

@@ -37,8 +37,8 @@ public class CommandDefinitionReaderTest {
 
 		reader = new CommandDefinitionReader();
 		commandDefinition = reader.readCommandDefinition(new ValidTestCommand());
-		assertEquals(ValidTestCommand.NAME, commandDefinition.getName());
-		assertEquals(ValidTestCommand.DESCRIPTION, commandDefinition.getDescription());
+		assertEquals(ValidTestCommand.COMMAND_NAME, commandDefinition.getName());
+		assertEquals(ValidTestCommand.COMMAND_DESCRIPTION, commandDefinition.getDescription());
 		annotations = ValidTestCommand.class.getAnnotations();
 		for (Annotation annotation : annotations) {
 			for (ArgumentDefinition argumentDefinition : commandDefinition) {

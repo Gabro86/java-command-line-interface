@@ -2,7 +2,6 @@ package commandline.argument;
 
 import commandline.exception.ArgumentNullException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * User: gno, Date: 06.01.2015 - 15:24
@@ -10,11 +9,18 @@ import org.jetbrains.annotations.Nullable;
 public class GenericArgument {
 	@NotNull
 	private final String name;
-	@Nullable
+	@NotNull
 	private final String value;
 
-	public GenericArgument(@NotNull String name, @Nullable String value) {
+	public GenericArgument(@NotNull String name, @NotNull String value) {
 		super();
+
+		if (name == null) {
+			throw new ArgumentNullException();
+		}
+		if (value == null) {
+			throw new ArgumentNullException();
+		}
 
 		String editName;
 
@@ -36,9 +42,45 @@ public class GenericArgument {
 		return this.name;
 	}
 
-	@Nullable
+	@NotNull
 	public String getValue() {
 		return this.value;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof GenericArgument)) {
+			return false;
+		}
+
+		GenericArgument argument = (GenericArgument) o;
+
+		if (!this.name.equals(argument.name)) {
+			return false;
+		}
+		if (!this.value.equals(argument.value)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = this.name.hashCode();
+		result = 31 * result + this.value.hashCode();
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "GenericArgument{" +
+				"name='" + this.name + '\'' +
+				", value='" + this.value + '\'' +
+				'}';
 	}
 
 	@NotNull

@@ -15,6 +15,11 @@ public class DoubleArgumentParser extends ArgumentParser<Double> {
 		super();
 	}
 
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(double.class) || clazz.isAssignableFrom(Double.class);
+	}
+
 	public boolean isValid(@NotNull String value) {
 		String regex;
 
@@ -49,11 +54,5 @@ public class DoubleArgumentParser extends ArgumentParser<Double> {
 		}
 
 		return parsedValue;
-	}
-
-	@NotNull
-	@Override
-	public Class<Double> getValueClass() {
-		return Double.class;
 	}
 }

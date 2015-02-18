@@ -13,6 +13,11 @@ public class CharacterArgumentParser extends ArgumentParser<Character> {
 		super();
 	}
 
+	@Override
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(char.class) || clazz.isAssignableFrom(Character.class);
+	}
+
 	@NotNull
 	@Override
 	public Character parse(@NotNull String value) throws ArgumentParseException {
@@ -31,11 +36,5 @@ public class CharacterArgumentParser extends ArgumentParser<Character> {
 		} catch (Exception e) {
 			throw new ArgumentParseException(e.getMessage(), e);
 		}
-	}
-
-	@NotNull
-	@Override
-	public Class<Character> getValueClass() {
-		return Character.class;
 	}
 }

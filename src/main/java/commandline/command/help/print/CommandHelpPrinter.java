@@ -45,7 +45,6 @@ public class CommandHelpPrinter extends HelpPrinter {
 		BorderStyle borderStyle;
 		LinkedList<ArgumentDefinition> arguments;
 
-		arguments = new LinkedList<>(getCommandDefinition().getArgumentDefinitionCollection());
 		//FIXME Für den unicode style muss unicode in der windows console freigeschaltet werden
 		//        borderStyle = BorderStyle.UNICODE_BOX;
 		borderStyle = createArgumentsBorderStyle();
@@ -55,10 +54,12 @@ public class CommandHelpPrinter extends HelpPrinter {
 		table.addCell(TYPE_COLUMN);
 		table.addCell(OBLIGATORY_COLUMN);
 		table.addCell(DEFAULT_VALUE_COLUMN);
+
+		arguments = new LinkedList<>(getCommandDefinition().getArgumentDefinitionCollection());
 		Collections.sort(arguments);
 		for (ArgumentDefinition argument : arguments) {
 			table.addCell(createLongNameString(argument));
-			table.addCell(SHORT_COMMAND_PREFIX + argument.getShortName());
+			table.addCell(createShortNameString(argument));
 			table.addCell(argument.getValueClass().getSimpleName());
 			table.addCell(String.valueOf(argument.isObligatory()));
 			if (argument.getDefaultValue() == null) {
@@ -77,22 +78,52 @@ public class CommandHelpPrinter extends HelpPrinter {
 		BorderStyle borderStyle;
 		List<ArgumentDefinition> arguments;
 
-		arguments = new LinkedList<>(getCommandDefinition().getArgumentDefinitionCollection());
 		//FIXME Für den unicode style muss unicode in der windows console freigeschaltet werden
 		//        borderStyle = BorderStyle.UNICODE_BOX;
 		borderStyle = createArgumentsBorderStyle();
 		table = new Table(3, borderStyle);
 		table.addCell(LONG_NAME_COLUMN);
+		table.addCell(SHORT_NAME_COLUMN);
 		table.addCell(EXAMPLES_COLUMN);
-		table.addCell(DESCRIPTION_COLUMN);
+
+		arguments = new LinkedList<>(getCommandDefinition().getArgumentDefinitionCollection());
 		Collections.sort(arguments);
 		for (ArgumentDefinition argument : arguments) {
 			table.addCell(createLongNameString(argument));
+			table.addCell(createShortNameString(argument));
 			table.addCell(createStringFromArray(argument.getExamples()));
+		}
+
+		return table;
+	}
+
+	@NotNull
+	private Table createArgumentsTablePart3() {
+		Table table;
+		BorderStyle borderStyle;
+		List<ArgumentDefinition> arguments;
+
+		//FIXME Für den unicode style muss unicode in der windows console freigeschaltet werden
+		//        borderStyle = BorderStyle.UNICODE_BOX;
+		borderStyle = createArgumentsBorderStyle();
+		table = new Table(3, borderStyle);
+		table.addCell(LONG_NAME_COLUMN);
+		table.addCell(SHORT_NAME_COLUMN);
+		table.addCell(DESCRIPTION_COLUMN);
+
+		arguments = new LinkedList<>(getCommandDefinition().getArgumentDefinitionCollection());
+		Collections.sort(arguments);
+		for (ArgumentDefinition argument : arguments) {
+			table.addCell(createLongNameString(argument));
+			table.addCell(createShortNameString(argument));
 			table.addCell(argument.getDescription());
 		}
 
 		return table;
+	}
+
+	private String createShortNameString(ArgumentDefinition argument) {
+		return SHORT_COMMAND_PREFIX + argument.getShortName();
 	}
 
 	@NotNull
@@ -140,10 +171,6 @@ public class CommandHelpPrinter extends HelpPrinter {
 		builder = new StringBuilder(20);
 		builder.append("--");
 		builder.append(argument.getLongName());
-		builder.append(", ");
-		if (!argument.getLongName().isEmpty()) {
-			builder.setLength(builder.length() - 2);
-		}
 
 		return builder.toString();
 	}
@@ -153,15 +180,18 @@ public class CommandHelpPrinter extends HelpPrinter {
 		Table headerTable;
 		Table argumentsTable1;
 		Table argumentsTable2;
+		Table argumentsTable3;
 		PrintWriter writer;
 
 		headerTable = createHeaderTable();
 		argumentsTable1 = createArgumentsTablePart1();
 		argumentsTable2 = createArgumentsTablePart2();
+		argumentsTable3 = createArgumentsTablePart3();
 		writer = new PrintWriter(getOutputStream());
 		writer.println(headerTable.render());
 		writer.println(argumentsTable1.render());
 		writer.println(argumentsTable2.render());
+		writer.println(argumentsTable3.render());
 		writer.flush();
 		writer.close();
 	}

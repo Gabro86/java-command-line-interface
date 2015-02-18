@@ -4,8 +4,6 @@ import commandline.language.syntax.CommandSyntaxValidator;
 import commandline.language.syntax.SyntaxException;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-
 /**
  * User: gno Date: 28.06.13 Time: 12:18
  */
@@ -19,10 +17,10 @@ public class GnuCommandSyntaxValidator extends CommandSyntaxValidator {
 		GnuCommandNameSyntaxValidator nameValidator;
 		GnuKeySyntaxValidator keyValidator;
 		GnuValueSyntaxValidator valueValidator;
-		String key;
-		String value;
-		String[] arguments;
 		String commandName;
+		boolean keyExists;
+		boolean valueExists;
+		String argument;
 
 		if (commandTokens == null) {
 			throw new SyntaxException(
@@ -40,28 +38,29 @@ public class GnuCommandSyntaxValidator extends CommandSyntaxValidator {
 		nameValidator.validate(commandName);
 
 		//Validates the keys and values of the cli arguments
+		keyExists = false;
+		valueExists = false;
 		if (commandTokens.length > 1) {
-			arguments = Arrays.copyOfRange(commandTokens, 1, commandTokens.length);
-			//The number of tokens must be even, because every key must have a value.
-			if (arguments.length % 2 != 0) {
-				throw new SyntaxException("The syntax validation of the command \"" + commandName +
-						"\" failed, because at least one key does not have a value or vice versa.");
-			}
-
 			keyValidator = new GnuKeySyntaxValidator();
 			valueValidator = new GnuValueSyntaxValidator();
-			for (int i = 0; i < arguments.length / 2; i += 2) {
-				key = arguments[i];
-				value = arguments[i + 1];
-				if (!keyValidator.isValid(key)) {
-					throw new SyntaxException("The syntax validation of the command \"" + commandName +
-							"\" failed, because the syntax of the key \"" + key + "\" is invalid.");
+			for (int i = 1; i < commandTokens.length; i++) {
+				argument = commandTokens[i];
+				if (keyValidator.isValid(argument)) {
+					keyExists = true;
 				}
-				if (!valueValidator.isValid(value)) {
+				if (valueValidator.isValid(argument)) {
+					valueExists = true;
+				}
+				if (!keyValidator.isValid(argument) && !valueValidator.isValid(argument)) {
 					throw new SyntaxException("The syntax validation of the command \"" + commandName +
-							"\" failed, because the syntax of the value \"" + value + "\" is invalid.");
+							"\" failed, because the syntax of the argument token \"" + argument + "\" is invalid.");
 				}
 			}
+		}
+		if (!keyExists && valueExists) {
+			throw new SyntaxException("The syntax validation of the command \"" + commandName + "\" failed, because the command " +
+					"doesn't contain argument names, but at least one argument value. Every argument value must have an argument " +
+					"name.");
 		}
 	}
 }

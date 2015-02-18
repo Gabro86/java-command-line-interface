@@ -14,13 +14,11 @@ public class CommandDefinitionBuilderTest {
 		String name;
 		String description;
 		ExecutableCommand commandToExecute;
-		boolean argumentInjectionEnabled;
 		ArgumentDefinitionList arguments;
 
 		name = "mock-command";
 		description = "mock-description";
 		commandToExecute = new MockExecutableCommand();
-		argumentInjectionEnabled = true;
 		arguments = new ArgumentDefinitionList();
 		expectedDefinition = new CommandDefinition(name, description, commandToExecute);
 
@@ -28,7 +26,6 @@ public class CommandDefinitionBuilderTest {
 		builder.setName(name);
 		builder.setDescription(description);
 		builder.setCommandToExecute(commandToExecute);
-		builder.setArgumentInjectionEnabled(argumentInjectionEnabled);
 		builder.setArguments(arguments);
 		builderDefinition = builder.create();
 

@@ -15,7 +15,7 @@ public class BooleanArgumentParser extends ArgumentParser<Boolean> {
 
 	@Override
 	public boolean isCompatible(@NotNull Class<?> clazz) {
-		return super.isCompatible(clazz) || clazz.equals(boolean.class);
+		return clazz.isAssignableFrom(boolean.class) || clazz.isAssignableFrom(Boolean.class);
 	}
 
 	@NotNull
@@ -30,11 +30,5 @@ public class BooleanArgumentParser extends ArgumentParser<Boolean> {
 					value));
 		}
 		return Boolean.valueOf(value);
-	}
-
-	@NotNull
-	@Override
-	public Class<Boolean> getValueClass() {
-		return Boolean.class;
 	}
 }

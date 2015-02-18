@@ -18,7 +18,6 @@ public class CommandDefinitionBuilder implements Iterable<ArgumentDefinition> {
 	private String description;
 	@NotNull
 	private ExecutableCommand commandToExecute;
-	private boolean argumentInjectionEnabled;
 	@NotNull
 	private ArgumentDefinitionList arguments;
 
@@ -28,7 +27,6 @@ public class CommandDefinitionBuilder implements Iterable<ArgumentDefinition> {
 		setDescription("mock-description");
 		setCommandToExecute(new MockExecutableCommand());
 		setArguments(new ArgumentDefinitionList());
-		setArgumentInjectionEnabled(false);
 	}
 
 	@NotNull
@@ -56,14 +54,6 @@ public class CommandDefinitionBuilder implements Iterable<ArgumentDefinition> {
 
 	public void setCommandToExecute(@NotNull ExecutableCommand commandToExecute) {
 		this.commandToExecute = commandToExecute;
-	}
-
-	public boolean isArgumentInjectionEnabled() {
-		return this.argumentInjectionEnabled;
-	}
-
-	public void setArgumentInjectionEnabled(boolean argumentInjectionEnabled) {
-		this.argumentInjectionEnabled = argumentInjectionEnabled;
 	}
 
 	@NotNull

@@ -17,8 +17,8 @@ public class TooManyMethodParametersTestCommand extends ExecutableCommand {
 
 	@SuppressWarnings("UnusedParameters")
 	@CliArgument(shortName = "t", longName = "test-key", validator = DefaultArgumentValidator.class,
-			parser = StringArgumentParser.class, obligatory = true, examples = {ValidTestCommand.EXAMPLE},
-			description = ValidTestCommand.DESCRIPTION)
+			parser = StringArgumentParser.class, obligatory = true, examples = {ValidTestCommand.ARGUMENT_EXAMPLE},
+			description = ValidTestCommand.COMMAND_DESCRIPTION)
 	public void method(String a, String b) {
 	}
 

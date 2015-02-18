@@ -61,7 +61,6 @@ public class CommandExecutorTest extends ExecutableCommand {
 		commandDefinitionBuilder.setName(SingleArgumentTestCommand.COMMAND_NAME);
 		commandDefinitionBuilder.setDescription(SingleArgumentTestCommand.COMMAND_DESCRIPTION);
 		commandDefinitionBuilder.setCommandToExecute(commandToExecute);
-		commandDefinitionBuilder.setArgumentInjectionEnabled(false);
 		commandDefinitionBuilder.addArgument(argumentDefinition);
 		commandDefinition = commandDefinitionBuilder.create();
 
@@ -118,7 +117,6 @@ public class CommandExecutorTest extends ExecutableCommand {
 		commandDefinitionBuilder.setName(SingleArgumentTestCommand.COMMAND_NAME);
 		commandDefinitionBuilder.setDescription(SingleArgumentTestCommand.COMMAND_DESCRIPTION);
 		commandDefinitionBuilder.setCommandToExecute(commandToExecute);
-		commandDefinitionBuilder.setArgumentInjectionEnabled(true);
 		commandDefinitionBuilder.addArgument(argumentDefinition);
 		commandDefinition = commandDefinitionBuilder.create();
 

@@ -5,19 +5,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * User: gno Date: 25.06.13 Time: 12:24
  */
-public abstract class ArgumentParser<T> {
+public abstract class ArgumentParser<OutputValueClass> {
 	public ArgumentParser() {
 		super();
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public boolean isCompatible(@NotNull Class<?> clazz) {
-		return clazz.isAssignableFrom(getValueClass());
-	}
-
 	@NotNull
-	public abstract T parse(@NotNull String value) throws ArgumentParseException;
-
-	@NotNull
-	public abstract Class<T> getValueClass();
+	public abstract OutputValueClass parse(@NotNull String value) throws ArgumentParseException;
+	public abstract boolean isCompatible(@NotNull Class<?> clazz);
 }

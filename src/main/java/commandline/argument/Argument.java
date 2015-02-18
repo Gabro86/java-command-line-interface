@@ -154,42 +154,6 @@ public class Argument<ValueType> {
 	}
 
 	@NotNull
-	@SuppressWarnings("unchecked")
-	public static <T> Argument<T> parse(@Nullable ArgumentDefinition definition, @Nullable String value) {
-		ArgumentParser<?> parser;
-		Argument<T> argument;
-		Object parsedValue;
-		String valueToParse;
-
-		if (definition == null) {
-			throw new ArgumentNullException();
-		}
-		valueToParse = value;
-		// A null value indicates that the user did not pass the argument to the cli, because there is no other way a user can pass a
-		// null value to an argument. In this case the default value will be used if the argument is optional.
-		if (valueToParse == null) {
-			if (definition.isObligatory()) {
-				throw new CommandLineException("The parsing of the argument \"" + definition.getLongName() + "\" failed, " +
-						"because the passed argument is obligatory, but null was passed.");
-			}
-			valueToParse = definition.getDefaultValue();
-		}
-		if (valueToParse == null) {
-			parsedValue = null;
-		} else {
-			try {
-				parser = definition.getParserClass().newInstance();
-			} catch (IllegalAccessException | InstantiationException e) {
-				throw new CommandLineException(e.getMessage(), e);
-			}
-			parsedValue = parser.parse(valueToParse);
-		}
-		argument = (Argument<T>) new Argument<>(definition, parsedValue);
-
-		return argument;
-	}
-
-	@NotNull
 	public static Argument<String> createMock() {
 		Argument<String> argument;
 		ArgumentDefinition definition;

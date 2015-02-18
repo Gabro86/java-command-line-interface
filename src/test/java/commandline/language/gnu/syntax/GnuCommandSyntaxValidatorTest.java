@@ -1,7 +1,7 @@
 package commandline.language.gnu.syntax;
 
-import commandline.language.syntax.SyntaxException;
 import commandline.exception.ArgumentNullException;
+import commandline.language.syntax.SyntaxException;
 import org.junit.Test;
 
 /**
@@ -57,8 +57,8 @@ public class GnuCommandSyntaxValidatorTest {
 		validate("--key value");
 	}
 
-	@Test(expected = SyntaxException.class)
-	public void testValidate_Invalid_NoValue() {
+	@Test
+	public void testValidate_Valid_NoValue() {
 		validate("command --key");
 	}
 
@@ -72,18 +72,18 @@ public class GnuCommandSyntaxValidatorTest {
 		validate("command value value");
 	}
 
-	@Test(expected = SyntaxException.class)
-	public void testValidate_Invalid_MultiValue() {
+	@Test
+	public void testValidate_Valid_MultiValue() {
 		validate("command --key value value");
 	}
 
-	@Test(expected = SyntaxException.class)
-	public void testValidate_Invalid_MultiKey() {
+	@Test
+	public void testValidate_Valid_MultiKey() {
 		validate("command --key1 --key2");
 	}
 
-	@Test(expected = SyntaxException.class)
-	public void testValidate_Invalid_MissingLastValue() {
+	@Test
+	public void testValidate_Valid_MissingLastValue() {
 		validate("command --key1 value1 --key2");
 	}
 

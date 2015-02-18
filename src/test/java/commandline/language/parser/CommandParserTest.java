@@ -49,7 +49,6 @@ public class CommandParserTest {
 		commandDefinitionBuilder.setName("test-command");
 		commandDefinitionBuilder.setDescription("This is a test command description.");
 		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
-		commandDefinitionBuilder.setArgumentInjectionEnabled(false);
 		commandDefinition = commandDefinitionBuilder.create();
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
@@ -96,7 +95,6 @@ public class CommandParserTest {
 		commandDefinitionBuilder.setName("test-command");
 		commandDefinitionBuilder.setDescription("This is a test command description.");
 		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
-		commandDefinitionBuilder.setArgumentInjectionEnabled(false);
 		commandDefinition = commandDefinitionBuilder.create();
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
@@ -183,7 +181,7 @@ public class CommandParserTest {
 		commandBefore.addArgument(argument);
 
 		//Creates the cli command that will be parsed
-		cliCommand = ValidTestCommand.NAME + " --help true --" + ValidTestCommand.COMMAND_1_SHORT_NAME + " test-value";
+		cliCommand = ValidTestCommand.COMMAND_NAME + " --help true --" + ValidTestCommand.ARGUMENT_1_LONG_NAME + " test-value";
 		cliTokens = cliCommand.split(" ");
 
 		commandDefinitions = new CommandDefinitionList();
@@ -215,7 +213,7 @@ public class CommandParserTest {
 		commandBefore.addArgument(argument);
 
 		//Creates the cli command that will be parsed
-		cliCommand = ValidTestCommand.NAME + " -h true --" + ValidTestCommand.COMMAND_1_SHORT_NAME + " test-value";
+		cliCommand = ValidTestCommand.COMMAND_NAME + " -h true --" + ValidTestCommand.ARGUMENT_1_LONG_NAME + " test-value";
 		cliTokens = cliCommand.split(" ");
 
 		commandDefinitions = new CommandDefinitionList();
@@ -239,7 +237,6 @@ public class CommandParserTest {
 		commandDefinitionBuilder.setName("test-command");
 		commandDefinitionBuilder.setDescription("This is a test command description.");
 		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
-		commandDefinitionBuilder.setArgumentInjectionEnabled(false);
 		commandDefinition = commandDefinitionBuilder.create();
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
@@ -281,7 +278,6 @@ public class CommandParserTest {
 		commandDefinitionBuilder.setName("test-command");
 		commandDefinitionBuilder.setDescription("This is a test command description.");
 		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
-		commandDefinitionBuilder.setArgumentInjectionEnabled(false);
 		commandDefinition = commandDefinitionBuilder.create();
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
@@ -327,7 +323,6 @@ public class CommandParserTest {
 		commandDefinitionBuilder.setName("test-command");
 		commandDefinitionBuilder.setDescription("This is a test command description.");
 		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
-		commandDefinitionBuilder.setArgumentInjectionEnabled(false);
 		commandDefinition = commandDefinitionBuilder.create();
 		commandDefinition.addArgumentDefinition(argumentDefinition);
 		commandDefinitions = new CommandDefinitionList();
@@ -381,4 +376,46 @@ public class CommandParserTest {
 		arguments = "test-command --test-key test-value".split(" ");
 		parser.parse(arguments);
 	}
+
+	//	@Test
+	//	public void testParse() throws Exception {
+	//		ArgumentDefinition definition;
+	//		Argument<Integer> argument;
+	//
+	//		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+	//				DefaultArgumentValidator.class, true, null, "description", new String[] {"example"});
+	//		argument = Argument.parse(definition, "100");
+	//		TestCase.assertEquals(100, (int) argument.getValue());
+	//	}
+	//
+	//	@Test
+	//	public void testParse_NullValue_NonObligatoryValue_NullDefaultValue() throws Exception {
+	//		ArgumentDefinition definition;
+	//		Argument<Object> argument;
+	//
+	//		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+	//				DefaultArgumentValidator.class, false, null, "description", new String[] {"example"});
+	//		argument = Argument.parse(definition, "");
+	//		TestCase.assertEquals(null, argument.getValue());
+	//	}
+	//
+	//	@Test
+	//	public void testParse_NullValue_NonObligatory_NonNullDefaultValue() throws Exception {
+	//		ArgumentDefinition definition;
+	//		Argument<Integer> argument;
+	//
+	//		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+	//				DefaultArgumentValidator.class, false, "100", "description", new String[] {"example"});
+	//		argument = Argument.parse(definition, "");
+	//		TestCase.assertEquals(100, (int) argument.getValue());
+	//	}
+	//
+	//	@Test(expected = CommandLineException.class)
+	//	public void testParse_NullValue_Obligatory_NullDefaultValue() throws Exception {
+	//		ArgumentDefinition definition;
+	//
+	//		definition = new ArgumentDefinition("longName", "s", Integer.class, IntegerArgumentParser.class,
+	//				DefaultArgumentValidator.class, true, null, "description", new String[] {"example"});
+	//		Argument.parse(definition, "");
+	//	}
 }

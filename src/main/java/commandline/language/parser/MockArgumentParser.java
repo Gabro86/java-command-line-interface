@@ -10,15 +10,14 @@ public class MockArgumentParser extends ArgumentParser<Object> {
 		super();
 	}
 
-	@NotNull
 	@Override
-	public Object parse(@NotNull String value) throws ArgumentParseException {
-		return value;
+	public boolean isCompatible(@NotNull Class<?> clazz) {
+		return clazz.isAssignableFrom(Object.class);
 	}
 
 	@NotNull
 	@Override
-	public Class<Object> getValueClass() {
-		return Object.class;
+	public Object parse(@NotNull String value) throws ArgumentParseException {
+		return value;
 	}
 }
