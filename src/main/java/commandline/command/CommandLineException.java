@@ -1,6 +1,6 @@
 package commandline.command;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CommandLineException extends RuntimeException {
 	private static final long serialVersionUID = 3779918911788472991L;
@@ -9,20 +9,20 @@ public class CommandLineException extends RuntimeException {
 		super();
 	}
 
-	public CommandLineException(@NotNull String message) {
+	public CommandLineException(@Nullable String message) {
 		super(message);
 	}
 
-	public CommandLineException(@NotNull Throwable cause) {
+	public CommandLineException(@Nullable Throwable cause) {
 		super(cause);
 	}
 
-	public CommandLineException(@NotNull String message, @NotNull Throwable cause, boolean enableSuppression,
+	public CommandLineException(@Nullable String message, @Nullable Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public CommandLineException(@NotNull String message, @NotNull Throwable cause) {
+	public CommandLineException(@Nullable String message, @Nullable Throwable cause) {
 		super(message, cause);
 	}
 }

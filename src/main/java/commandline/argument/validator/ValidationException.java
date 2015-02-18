@@ -1,6 +1,5 @@
 package commandline.argument.validator;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -11,11 +10,11 @@ public class ValidationException extends RuntimeException {
 		super();
 	}
 
-	public ValidationException(@NotNull String message) {
+	public ValidationException(@Nullable String message) {
 		super(message);
 	}
 
-	public ValidationException(@NotNull String message, @Nullable Throwable cause) {
+	public ValidationException(@Nullable String message, @Nullable Throwable cause) {
 		super(message, cause);
 	}
 
@@ -23,7 +22,7 @@ public class ValidationException extends RuntimeException {
 		super(cause);
 	}
 
-	public ValidationException(@NotNull String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public ValidationException(@Nullable String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 }
