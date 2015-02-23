@@ -11,7 +11,7 @@ public class MockArgumentParser extends ArgumentParser<Object> {
 	}
 
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(Object.class);
 	}
 

@@ -14,7 +14,7 @@ public class CharacterArgumentParser extends ArgumentParser<Character> {
 	}
 
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(char.class) || clazz.isAssignableFrom(Character.class);
 	}
 

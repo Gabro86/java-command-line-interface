@@ -14,7 +14,7 @@ public class FloatArgumentParser extends ArgumentParser<Float> {
 	}
 
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(float.class) || clazz.isAssignableFrom(Float.class);
 	}
 

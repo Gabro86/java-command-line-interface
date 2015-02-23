@@ -14,7 +14,7 @@ public class ShortArgumentParser extends ArgumentParser<Short> {
 	}
 
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(short.class) || clazz.isAssignableFrom(Short.class);
 	}
 

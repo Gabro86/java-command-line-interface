@@ -12,5 +12,5 @@ public abstract class ArgumentParser<OutputValueClass> {
 
 	@NotNull
 	public abstract OutputValueClass parse(@NotNull String value) throws ArgumentParseException;
-	public abstract boolean isCompatible(@NotNull Class<?> clazz);
+	public abstract boolean isParsedValueClassCompatible(@NotNull Class<?> clazz);
 }

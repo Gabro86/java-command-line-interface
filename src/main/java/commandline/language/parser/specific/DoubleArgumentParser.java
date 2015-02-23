@@ -16,7 +16,7 @@ public class DoubleArgumentParser extends ArgumentParser<Double> {
 	}
 
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(double.class) || clazz.isAssignableFrom(Double.class);
 	}
 

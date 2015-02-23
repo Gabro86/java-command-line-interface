@@ -59,7 +59,14 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		this.shortName = processShortName(shortName);
 
 		//Validates and sets the long name
-		this.longName = processLongName(longName);
+		if (longName == null) {
+			throw new CommandLineException();
+		}
+		this.longName = longName.trim();
+		if (this.longName.isEmpty()) {
+			throw new CommandLineException(
+					"The long name could not been processed, because the passed long name doesn't contain any character.");
+		}
 
 		//Validates and sets the value type
 		if (valueClass == null) {
@@ -71,7 +78,7 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		if (parser == null) {
 			throw new ArgumentNullException();
 		}
-		if (!parser.isCompatible(valueClass)) {
+		if (!parser.isParsedValueClassCompatible(valueClass)) {
 			throw new IllegalArgumentException("The argument definition could not been created, because the passed " +
 					"parser \"" + parser.getClass() + "\" is not compatible with the passed value class \"" + valueClass + "\"");
 		}
@@ -99,7 +106,14 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		this.defaultValue = defaultValue;
 
 		//Validates and sets the description
-		this.description = processDescription(description);
+		if (description == null) {
+			throw new CommandLineException();
+		}
+		this.description = description.trim();
+		if (this.description.isEmpty()) {
+			throw new CommandLineException(
+					"The description could not been processed, because the passed description doesn't contain any character.");
+		}
 
 		//Validates and sets the examples
 		this.examples = processExamples(examples);
@@ -245,6 +259,7 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		if (examples.length == 0) {
 			throw new CommandLineException("The examples could not been processed, because no example was passed.");
 		}
+
 		processedExamples = new LinkedList<>();
 		for (String example : examples) {
 			if (example == null) {
@@ -260,23 +275,6 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		}
 
 		return processedExamples.toArray(new String[examples.length]);
-	}
-
-	@NotNull
-	static String processDescription(@NotNull String description) {
-		String processedDescription;
-		String message;
-
-		if (description == null) {
-			throw new CommandLineException();
-		}
-		processedDescription = description.trim();
-		if (processedDescription.isEmpty()) {
-			message = "The description could not been processed, because the passed description doesn't contain any character.";
-			throw new CommandLineException(message);
-		}
-
-		return processedDescription;
 	}
 
 	static ArgumentParser<?> createCompatibleParser(Class<? extends ArgumentParser<?>> parserClass, Class<?> valueClass) {
@@ -324,23 +322,6 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		}
 
 		return validator;
-	}
-
-	@NotNull
-	static String processLongName(@NotNull String longName) {
-		String editLongName;
-		String message;
-
-		if (longName == null) {
-			throw new CommandLineException();
-		}
-		editLongName = longName.trim();
-		if (editLongName.isEmpty()) {
-			message = "The long name could not been processed, because the passed long name doesn't contain any character.";
-			throw new CommandLineException(message);
-		}
-
-		return editLongName;
 	}
 
 	@Nullable

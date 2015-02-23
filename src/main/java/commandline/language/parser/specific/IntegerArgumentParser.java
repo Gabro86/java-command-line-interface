@@ -14,7 +14,7 @@ public class IntegerArgumentParser extends ArgumentParser<Integer> {
 	}
 
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(int.class) || clazz.isAssignableFrom(Integer.class);
 	}
 

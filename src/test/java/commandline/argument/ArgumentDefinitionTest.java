@@ -51,9 +51,9 @@ public class ArgumentDefinitionTest {
 
 		definition = new ArgumentDefinition(MockExecutableCommand.ARGUMENT_TEST_LONG_NAME,
 				MockExecutableCommand.ARGUMENT_TEST_SHORT_NAME, String.class, new StringArgumentParser(),
-				new DefaultArgumentValidator(),
-				MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY, MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE,
-				MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION, MockExecutableCommand.ARGUMENT_TEST_EXAMPLES);
+				new DefaultArgumentValidator(), MockExecutableCommand.ARGUMENT_TEST_OBLIGATORY,
+				MockExecutableCommand.ARGUMENT_TEST_DEFAULT_VALUE, MockExecutableCommand.ARGUMENT_TEST_DESCRIPTION,
+				MockExecutableCommand.ARGUMENT_TEST_EXAMPLES);
 		assertEquals(StringArgumentParser.class, definition.getParser().getClass());
 	}
 
@@ -93,16 +93,6 @@ public class ArgumentDefinitionTest {
 	}
 
 	@Test
-	public void testProcessLongName() {
-		assertEquals("test-name", ArgumentDefinition.processLongName("test-name"));
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testProcessLongName_EmptyLongName() {
-		ArgumentDefinition.processLongName("");
-	}
-
-	@Test
 	public void testProcessShortName() {
 		assertEquals("a", ArgumentDefinition.processShortName("a"));
 	}
@@ -138,26 +128,6 @@ public class ArgumentDefinitionTest {
 	@Test
 	public void testCreateValidator() {
 		ArgumentDefinition.createValidator(DefaultArgumentValidator.class);
-	}
-
-	@Test
-	public void testProcessDescription() {
-		String descriptionAfter;
-		String descriptionBefore;
-
-		descriptionBefore = "This is an example description.";
-		descriptionAfter = ArgumentDefinition.processDescription(descriptionBefore);
-		assertEquals(descriptionBefore, descriptionAfter);
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testProcessDescription_EmptyDescription() {
-		ArgumentDefinition.processDescription("");
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testProcessDescription_EmptyDescriptionWithSpaces() {
-		ArgumentDefinition.processDescription(" ");
 	}
 
 	@Test

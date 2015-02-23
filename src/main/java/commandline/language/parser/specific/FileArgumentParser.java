@@ -11,7 +11,7 @@ import java.io.File;
  */
 public class FileArgumentParser extends ArgumentParser<File> {
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(File.class);
 	}
 

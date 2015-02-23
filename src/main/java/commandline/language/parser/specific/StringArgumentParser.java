@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class StringArgumentParser extends ArgumentParser<String> {
 	@Override
-	public boolean isCompatible(@NotNull Class<?> clazz) {
+	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(String.class);
 	}
 
