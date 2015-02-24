@@ -63,6 +63,10 @@ public class GnuGenericCommandParser implements GenericCommandParser {
 		for (Map.Entry<String, StringBuilder> entry : argumentMap.entrySet()) {
 			argumentName = entry.getKey();
 			argumentValue = entry.getValue().toString();
+			argumentValue = argumentValue.trim();
+			if (argumentValue.isEmpty()) {
+				argumentValue = null;
+			}
 			genericArgument = new GenericArgument(argumentName, argumentValue);
 			command.addArgument(genericArgument);
 		}

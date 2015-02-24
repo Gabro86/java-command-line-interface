@@ -103,10 +103,13 @@ public class CommandParser {
 		} else {
 			genericArgument = shortGenericArgument;
 		}
-
 		if (genericArgument != null) {
 			helpArgumentDefinition = commandDefinition.getArgumentDefinition(genericArgument.getName());
-			typeSafeArgument = new Argument<>(helpArgumentDefinition, Boolean.parseBoolean(genericArgument.getValue()));
+			genericArgumentValue = genericArgument.getValue();
+			if (genericArgumentValue == null || genericArgumentValue.isEmpty()) {
+				genericArgumentValue = "true";
+			}
+			typeSafeArgument = new Argument<>(helpArgumentDefinition, Boolean.parseBoolean(genericArgumentValue));
 			typeSafeCommand = new Command(commandDefinition);
 			typeSafeCommand.addArgument(typeSafeArgument);
 			return typeSafeCommand;
@@ -130,27 +133,36 @@ public class CommandParser {
 			shortGenericArgument = genericCommand.getArgument(argumentLongName);
 			longGenericArgument = genericCommand.getArgument(argumentShortName);
 
-			/*
-			 * Tests if the argument was passed throw cli. If it was not passed and the argument is not obligatory the default value
-			 * will be used.
-			 */
-			if (shortGenericArgument == null && longGenericArgument == null) {
-				if (definition.isObligatory()) {
-					throw new CommandParseException("The cli command  \"" + commandName + "\" could not been parsed, " +
-							"because the cli command \"" + commandName + "\" doesn't contain the obligatory argument \"" +
-							definition.getLongName() + " (" + definition.getShortName() + ")\".");
-				} else {
-					//Since this argument was not passed throw cli the default value will be used.
-					longGenericArgument = new GenericArgument(definition.getLongName(), definition.getDefaultValue());
-				}
-			}
-
 			//Tests if the passed cli argument has a short and a long name. Only one of them can be passed as cli argument.
 			if (shortGenericArgument != null && longGenericArgument != null) {
 				throw new CommandParseException("The cli command \"" + commandName + "\" could not been parsed, because the cli " +
 						"command contains the argument long name \"" + argumentLongName + "\" and the argument short name \"" +
 						argumentShortName + "\". Both arguments belong to the same argument. You can use only the long name or the " +
 						"short name, but not both in the same command.");
+			}
+
+			/*
+			 * Tests if the argument was passed throw cli. If it was not passed and the argument is not obligatory the default value
+			 * will be used.
+			 */
+			if (definition.isObligatory()) {
+				if (shortGenericArgument == null && longGenericArgument == null) {
+					throw new CommandParseException("The cli command  \"" + commandName + "\" could not been parsed, " +
+							"because the cli command \"" + commandName + "\" doesn't contain the obligatory argument \"" +
+							definition.getLongName() + " (" + definition.getShortName() + ")\".");
+				}
+				if (!definition.getValueClass().equals(Boolean.class) &&
+						((shortGenericArgument != null && shortGenericArgument.getValue() == null) ||
+								(longGenericArgument != null && longGenericArgument.getValue() == null))) {
+					throw new CommandParseException("The cli command  \"" + commandName + "\" could not been parsed, because the " +
+							"cli command \"" + commandName + "\" doesn't contain the value for the obligatory argument \"" +
+							definition.getLongName() + " (" + definition.getShortName() + ")\".");
+				}
+			} else {
+				if (shortGenericArgument == null && longGenericArgument == null) {
+					//Since this argument was not passed throw cli the default value will be used.
+					longGenericArgument = new GenericArgument(definition.getLongName(), definition.getDefaultValue());
+				}
 			}
 
 			/*
@@ -167,16 +179,14 @@ public class CommandParser {
 			 * The argument value can be omitted on boolean arguments (flags). A missing argument value on a boolean argument is
 			 * interpreted as the argument value "true".
 			 */
-			genericArgumentValue = genericArgument.getValue();
-			if (genericArgumentValue == null) {
+			if (genericArgument.getValue() == null) {
 				parsedValue = null;
 			} else {
-				genericArgumentValue = genericArgumentValue.trim();
-				if (genericArgumentValue.isEmpty() && definition.getValueClass().equals(Boolean.class)) {
-					genericArgumentValue = "true";
-				}
 				argumentParser = definition.getParser();
-				parsedValue = argumentParser.parse(genericArgumentValue);
+				parsedValue = argumentParser.parse(genericArgument.getValue());
+			}
+			if (parsedValue == null && definition.getValueClass().equals(Boolean.class)) {
+				parsedValue = true;
 			}
 
 			typeSafeArgument = new Argument<>(definition, parsedValue);

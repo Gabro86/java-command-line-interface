@@ -6,7 +6,7 @@ import commandline.language.syntax.SyntaxException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 /**
  * User: gno, Date: 26.07.13 - 15:36
@@ -150,7 +150,7 @@ public class GnuGenericArgumentParserTest {
 		cliCommand = "command --key";
 		arguments = cliCommand.split(" ");
 		command = parser.parse(arguments);
-		assertTrue(command.getArgument("key").getValue().isEmpty());
+		assertNull(command.getArgument("key").getValue());
 	}
 
 	@Test(expected = SyntaxException.class)
@@ -211,8 +211,8 @@ public class GnuGenericArgumentParserTest {
 		command = parser.parse(arguments);
 		argument1 = command.getArgument("key1");
 		argument2 = command.getArgument("key2");
-		assertTrue(argument1.getValue().isEmpty());
-		assertTrue(argument2.getValue().isEmpty());
+		assertNull(argument1.getValue());
+		assertNull(argument2.getValue());
 	}
 
 	@Test
@@ -231,7 +231,7 @@ public class GnuGenericArgumentParserTest {
 		argument1 = command.getArgument("key1");
 		argument2 = command.getArgument("key2");
 		assertEquals("value", argument1.getValue());
-		assertTrue(argument2.getValue().isEmpty());
+		assertNull(argument2.getValue());
 	}
 
 	@Test
