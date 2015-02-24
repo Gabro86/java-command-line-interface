@@ -82,7 +82,6 @@ public class ArgumentDefinitionTest {
 		annotation.setShortName("t");
 		annotation.setLongName("test-name");
 		annotation.setDefaultValue("test-value");
-		annotation.setDefaultValueNull(false);
 		annotation.setObligatory(false);
 		annotation.setDescription("This is an example description");
 		annotation.setExamples(new String[] {"This is an example."});
@@ -249,7 +248,6 @@ public class ArgumentDefinitionTest {
 		defaultValueBefore = "test-value";
 		annotation = new MockCliArgument();
 		annotation.setDefaultValue(defaultValueBefore);
-		annotation.setDefaultValueNull(false);
 		defaultValueAfter = ArgumentDefinition.getDefaultValueFromAnnotation(annotation);
 		assertEquals(defaultValueBefore, defaultValueAfter);
 	}
@@ -263,45 +261,8 @@ public class ArgumentDefinitionTest {
 		defaultValueBefore = "test-value";
 		annotation = new MockCliArgument();
 		annotation.setDefaultValue(defaultValueBefore);
-		annotation.setDefaultValueNull(false);
 		defaultValueAfter = ArgumentDefinition.getDefaultValueFromAnnotation(annotation);
 		assertEquals(defaultValueBefore, defaultValueAfter);
-	}
-
-	@Test
-	public void testGetDefaultValue_NullDefaultValue_DefaultToNull() throws Exception {
-		MockCliArgument annotation;
-		String defaultValueAfter;
-
-		annotation = new MockCliArgument();
-		annotation.setDefaultValue(null);
-		annotation.setDefaultValueNull(true);
-		defaultValueAfter = ArgumentDefinition.getDefaultValueFromAnnotation(annotation);
-		assertEquals(null, defaultValueAfter);
-	}
-
-	@Test
-	public void testGetDefaultValue_NullDefaultValue_DontDefaultToNull() throws Exception {
-		MockCliArgument annotation;
-		String defaultValueAfter;
-
-		annotation = new MockCliArgument();
-		annotation.setDefaultValue(null);
-		annotation.setDefaultValueNull(false);
-		defaultValueAfter = ArgumentDefinition.getDefaultValueFromAnnotation(annotation);
-		assertEquals(null, defaultValueAfter);
-	}
-
-	@Test(expected = CommandLineException.class)
-	public void testGetDefaultValue_NonNullDefaultValue_DefaultValueToNull() throws Exception {
-		MockCliArgument annotation;
-		String defaultValueAfter;
-
-		annotation = new MockCliArgument();
-		annotation.setDefaultValue("test-value");
-		annotation.setDefaultValueNull(true);
-		defaultValueAfter = ArgumentDefinition.getDefaultValueFromAnnotation(annotation);
-		assertEquals(null, defaultValueAfter);
 	}
 
 	public static void compareAnnotationWithDefinition(CliArgument annotation, ArgumentDefinition definition) {
@@ -315,7 +276,7 @@ public class ArgumentDefinitionTest {
 		assertEquals(annotation.shortName(), definition.getShortName());
 		assertEquals(annotation.longName(), definition.getLongName());
 		assertEquals(annotation.obligatory(), definition.isObligatory());
-		if (annotation.isDefaultValueNull() || annotation.defaultValue().equals(CliArgument.nullValue)) {
+		if (annotation.defaultValue().equals(CliArgument.nullValue)) {
 			assertNull(definition.getDefaultValue());
 		} else {
 			assertEquals(annotation.defaultValue(), definition.getDefaultValue());

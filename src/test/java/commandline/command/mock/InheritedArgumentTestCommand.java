@@ -19,7 +19,7 @@ public class InheritedArgumentTestCommand extends ExecutableCommand {
 		super();
 	}
 
-	@CliArgument(shortName = "t", longName = ARGUMENT_TEST_LONG_NAME, obligatory = false, isDefaultValueNull = true,
+	@CliArgument(shortName = "t", longName = ARGUMENT_TEST_LONG_NAME, obligatory = false,
 			description = "This is a test argument.", examples = {"example1"})
 	public void setTestArgument(String value) {
 	}

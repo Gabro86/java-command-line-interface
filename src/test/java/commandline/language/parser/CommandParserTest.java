@@ -154,6 +154,54 @@ public class CommandParserTest {
 		assertEquals(commandBefore, commandAfter);
 	}
 
+	/*
+	 * Makes sure that an empty string default value is not converted into a null default value.
+	 */
+	@Test
+	public void testParse_ArgumentNotPassedUseDefaultEmptyStringValue() throws Exception {
+		CommandParser parser;
+		CommandDefinitionList commandDefinitions;
+		String[] cliCommandArguments;
+		CommandDefinitionBuilder commandDefinitionBuilder;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
+		ArgumentDefinition argumentDefinition;
+		CommandDefinition commandDefinition;
+		Command commandBefore;
+		Command commandAfter;
+		Argument<String> argument;
+
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName("test-key");
+		argumentDefinitionBuilder.setShortName("t");
+		argumentDefinitionBuilder.setDescription("This is a test argument.");
+		argumentDefinitionBuilder.setValueClass(String.class);
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
+		argumentDefinitionBuilder.setParser(new StringArgumentParser());
+		argumentDefinitionBuilder.setDefaultValue("");
+		argumentDefinitionBuilder.setExamples(new String[] {"example"});
+		argumentDefinitionBuilder.setObligatory(false);
+		argumentDefinition = argumentDefinitionBuilder.create();
+
+		commandDefinitionBuilder = new CommandDefinitionBuilder();
+		commandDefinitionBuilder.setName("test-command");
+		commandDefinitionBuilder.setDescription("This is a test command description.");
+		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
+		commandDefinition = commandDefinitionBuilder.create();
+		commandDefinition.addArgumentDefinition(argumentDefinition);
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(commandDefinition);
+		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
+
+		argument = new Argument<>(argumentDefinition, "");
+		commandBefore = new Command(commandDefinition);
+		commandBefore.addArgument(argument);
+
+		cliCommandArguments = new String[] {"test-command"};
+		parser = new CommandParser(new GnuCommandLineLanguage(), commandDefinitions);
+		commandAfter = parser.parse(cliCommandArguments);
+		assertEquals(commandBefore, commandAfter);
+	}
+
 	@Test
 	public void testParse_HelpCommand() throws Exception {
 		CommandParser parser;

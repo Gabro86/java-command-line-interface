@@ -19,7 +19,6 @@ public class MockCliArgument implements CliArgument {
 	private String longName;
 	private boolean obligatory;
 	private String defaultValue;
-	private boolean isDefaultValueNull;
 	private Class<? extends ArgumentParser<?>> parser;
 	private Class<? extends ArgumentValidator<?>> validator;
 	private String description;
@@ -31,7 +30,6 @@ public class MockCliArgument implements CliArgument {
 		setLongName("test-name");
 		setObligatory(false);
 		setDefaultValue(null);
-		setDefaultValueNull(false);
 		setParser(MockArgumentParser.class);
 		setValidator(DefaultArgumentValidator.class);
 		setDescription("This is an example description.");
@@ -84,10 +82,6 @@ public class MockCliArgument implements CliArgument {
 		} else {
 			this.defaultValue = defaultValue;
 		}
-	}
-
-	public void setDefaultValueNull(boolean isDefaultValueNull) {
-		this.isDefaultValueNull = isDefaultValueNull;
 	}
 
 	@NotNull
@@ -163,11 +157,6 @@ public class MockCliArgument implements CliArgument {
 	@Override
 	public String defaultValue() {
 		return this.defaultValue;
-	}
-
-	@Override
-	public boolean isDefaultValueNull() {
-		return this.isDefaultValueNull;
 	}
 
 	@NotNull

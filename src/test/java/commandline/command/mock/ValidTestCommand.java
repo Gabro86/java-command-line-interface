@@ -71,7 +71,7 @@ public class ValidTestCommand extends ExecutableCommand {
 
 	@SuppressWarnings("UnusedParameters")
 	@CliArgument(shortName = ARGUMENT_5_SHORT_NAME, longName = ARGUMENT_5_LONG_NAME, obligatory = false,
-			isDefaultValueNull = true, parser = StringArgumentParser.class, validator = DefaultArgumentValidator.class,
+			parser = StringArgumentParser.class, validator = DefaultArgumentValidator.class,
 			description = ARGUMENT_DESCRIPTION, examples = {ARGUMENT_EXAMPLE})
 	public void optionalNullDefaultValue(String a) {
 	}

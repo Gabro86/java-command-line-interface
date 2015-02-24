@@ -58,7 +58,7 @@ public class HelpExecutableCommand extends ExecutableCommand {
 	}
 
 	@CliArgument(shortName = ARGUMENT_COMMAND_NAME_SHORT_NAME, longName = ARGUMENT_COMMAND_NAME_LONG_NAME,
-			obligatory = ARGUMENT_COMMAND_NAME_OBLIGATORY, isDefaultValueNull = true,
+			obligatory = ARGUMENT_COMMAND_NAME_OBLIGATORY,
 			examples = {ARGUMENT_COMMAND_NAME_EXAMPLE1, ARGUMENT_COMMAND_NAME_EXAMPLE2},
 			description = ARGUMENT_COMMAND_NAME_DESCRIPTION)
 	public void setCommandToShowHelpFor(@Nullable String commandToShowHelpFor) {

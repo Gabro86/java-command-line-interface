@@ -382,20 +382,13 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 	@Nullable
 	static String getDefaultValueFromAnnotation(@NotNull CliArgument annotation) {
 		String defaultValue;
-		boolean isDefaultValueNull;
 		String value;
 
 		if (annotation == null) {
 			throw new ArgumentNullException();
 		}
 		defaultValue = annotation.defaultValue();
-		isDefaultValueNull = annotation.isDefaultValueNull();
-		if (isDefaultValueNull && !defaultValue.equals(CliArgument.nullValue)) {
-			throw new CommandLineException("The default value could not been retrieved from the annotation, " +
-					"because the default value is set to a non-null value while the field isDefaultValueNull is set to true. " +
-					"It's illegal to set a default value and the same time to set the isDefaultValueNull field to true ");
-		}
-		if (isDefaultValueNull || defaultValue.equals(CliArgument.nullValue)) {
+		if (defaultValue.equals(CliArgument.nullValue)) {
 			value = null;
 		} else {
 			value = defaultValue;

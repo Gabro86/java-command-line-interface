@@ -18,7 +18,6 @@ public @interface CliArgument {
 	String longName();
 	boolean obligatory();
 	String defaultValue() default nullValue;
-	boolean isDefaultValueNull() default false;
 	Class<? extends ArgumentParser<?>> parser() default MockArgumentParser.class;
 	Class<? extends ArgumentValidator<?>> validator() default DefaultArgumentValidator.class;
 	String description();
