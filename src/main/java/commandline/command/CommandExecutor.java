@@ -53,7 +53,6 @@ public class CommandExecutor {
 		CommandDefinitionList definitions;
 		CommandDefinitionReader reader;
 		Command command;
-		CommandParser commandParser;
 
 		if (cliArguments == null) {
 			throw new ArgumentNullException();
@@ -69,10 +68,7 @@ public class CommandExecutor {
 			definitions.add(definition);
 		}
 		definitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(definitions));
-
-		commandParser = new CommandParser(getCommandLineLanguage(), definitions);
-		command = commandParser.parse(cliArguments);
-		command.execute();
+		command = execute(cliArguments, definitions);
 
 		return command;
 	}

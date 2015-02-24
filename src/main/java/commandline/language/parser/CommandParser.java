@@ -151,13 +151,10 @@ public class CommandParser {
 							"because the cli command \"" + commandName + "\" doesn't contain the obligatory argument \"" +
 							definition.getLongName() + " (" + definition.getShortName() + ")\".");
 				}
-				if (!definition.getValueClass().equals(Boolean.class) &&
-						((shortGenericArgument != null && shortGenericArgument.getValue() == null) ||
-								(longGenericArgument != null && longGenericArgument.getValue() == null))) {
-					throw new CommandParseException("The cli command  \"" + commandName + "\" could not been parsed, because the " +
-							"cli command \"" + commandName + "\" doesn't contain the value for the obligatory argument \"" +
-							definition.getLongName() + " (" + definition.getShortName() + ")\".");
-				}
+				/*
+				 * The argument value is not tested for null at the point, because the Argument class is responsible for validating
+				 * the value.
+				 */
 			} else {
 				if (shortGenericArgument == null && longGenericArgument == null) {
 					//Since this argument was not passed throw cli the default value will be used.

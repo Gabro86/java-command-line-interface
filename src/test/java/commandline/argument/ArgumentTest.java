@@ -13,23 +13,21 @@ public class ArgumentTest {
 		super();
 	}
 
-	@SuppressWarnings("ResultOfObjectAllocationIgnored")
-	@Test
-	public void testConstructor() {
+	@Test(expected = CommandLineException.class)
+	public void testValidateValue_ValueClassMismatch() {
 		ArgumentDefinition definition;
 
 		definition = new ArgumentDefinition("longName", "s", String.class, new StringArgumentParser(), new DefaultArgumentValidator(),
 				true, null, "description", new String[] {"example"});
-		new Argument<>(definition, "value");
+		Argument.validateValue(definition, new Object());
 	}
 
-	@SuppressWarnings("ResultOfObjectAllocationIgnored")
 	@Test(expected = CommandLineException.class)
-	public void testConstructor_ValueClassMismatch() {
+	public void testValidateValue_ValueIsNullButObligatory() {
 		ArgumentDefinition definition;
 
 		definition = new ArgumentDefinition("longName", "s", String.class, new StringArgumentParser(), new DefaultArgumentValidator(),
 				true, null, "description", new String[] {"example"});
-		new Argument<>(definition, new Object());
+		Argument.validateValue(definition, null);
 	}
 }

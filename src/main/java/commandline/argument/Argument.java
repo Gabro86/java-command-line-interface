@@ -25,7 +25,6 @@ public class Argument<ValueType> {
 				examples), value);
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	public Argument(@NotNull ArgumentDefinition definition, @Nullable ValueType value) {
 		super();
 		if (definition == null) {
@@ -122,7 +121,7 @@ public class Argument<ValueType> {
 	}
 
 	@SuppressWarnings("unchecked")
-	static void validateValue(@NotNull ArgumentDefinition definition, @Nullable Object value) {
+	static <T> void validateValue(@NotNull ArgumentDefinition definition, @Nullable T value) {
 		Class<?> valueClass;
 		Class<?> valueClassFromDefinition;
 		ArgumentValidator validator;
@@ -134,7 +133,12 @@ public class Argument<ValueType> {
 		 * Value is not the cli value that was passed by the user. Instead it's the value that was parsed from the value the user
 		 * passed.
 		 */
-		if (value != null) {
+		if (value == null) {
+			if (definition.isObligatory()) {
+				throw new CommandLineException("The validation of the argument \"" + definition.getLongName() + "\" failed, " +
+						"because the value is obligatory but no value was passed.");
+			}
+		} else {
 			//Tests if the value is from a class that is defined in the argument definition.
 			valueClass = value.getClass();
 			valueClassFromDefinition = definition.getValueClass();

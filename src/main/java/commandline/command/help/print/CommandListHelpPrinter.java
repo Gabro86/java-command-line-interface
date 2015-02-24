@@ -34,7 +34,7 @@ public class CommandListHelpPrinter extends HelpPrinter {
 		BorderStyle borderStyle;
 		TreeSet<CommandDefinition> sortedDefinitions;
 
-		//TODO Für den unicode style muss unicode in der windows console freigeschaltet werden
+		//FIXME Für den unicode style muss unicode in der windows console freigeschaltet werden
 		//        borderStyle = BorderStyle.UNICODE_BOX;
 		borderStyle = createArgumentsBorderStyle();
 		table = new Table(2, borderStyle);
@@ -58,7 +58,7 @@ public class CommandListHelpPrinter extends HelpPrinter {
 		Table table;
 		BorderStyle borderStyle;
 
-		//TODO Für den unicode style muss unicode in der windows console freigeschaltet werden
+		//FIXME Für den unicode style muss unicode in der windows console freigeschaltet werden
 		//        borderStyle = BorderStyle.UNICODE_BOX;
 		borderStyle = createHeaderBorderStyle();
 		table = new Table(2, borderStyle);

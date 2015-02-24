@@ -9,6 +9,7 @@ import commandline.command.CommandDefinition;
 import commandline.command.CommandDefinitionBuilder;
 import commandline.command.CommandDefinitionList;
 import commandline.command.CommandDefinitionReader;
+import commandline.command.CommandLineException;
 import commandline.command.ExecutableCommand;
 import commandline.command.MockExecutableCommand;
 import commandline.command.help.HelpExecutableCommand;
@@ -393,7 +394,7 @@ public class CommandParserTest {
 		parser.parse(cliCommandArguments);
 	}
 
-	@Test(expected = CommandParseException.class)
+	@Test(expected = CommandLineException.class)
 	public void testParse_ObligatoryArgumentValueIsNull() throws Exception {
 		CommandParser parser;
 		CommandDefinitionList commandDefinitions;
