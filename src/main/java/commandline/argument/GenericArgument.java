@@ -2,6 +2,7 @@ package commandline.argument;
 
 import commandline.exception.ArgumentNullException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * User: gno, Date: 06.01.2015 - 15:24
@@ -9,21 +10,15 @@ import org.jetbrains.annotations.NotNull;
 public class GenericArgument {
 	@NotNull
 	private final String name;
-	@NotNull
+	@Nullable
 	private final String value;
 
-	public GenericArgument(@NotNull String name, @NotNull String value) {
+	public GenericArgument(@NotNull String name, @Nullable String value) {
 		super();
-
-		if (name == null) {
-			throw new ArgumentNullException();
-		}
-		if (value == null) {
-			throw new ArgumentNullException();
-		}
 
 		String editName;
 
+		//The field value can be null;
 		if (name == null) {
 			throw new ArgumentNullException();
 		}
@@ -33,7 +28,6 @@ public class GenericArgument {
 					"The generic argument could not been created, because the passed name doesn't contain any character.");
 		}
 		this.name = editName;
-		//value can be null
 		this.value = value;
 	}
 
@@ -42,7 +36,7 @@ public class GenericArgument {
 		return this.name;
 	}
 
-	@NotNull
+	@Nullable
 	public String getValue() {
 		return this.value;
 	}
@@ -69,18 +63,18 @@ public class GenericArgument {
 	}
 
 	@Override
-	public int hashCode() {
-		int result = this.name.hashCode();
-		result = 31 * result + this.value.hashCode();
-		return result;
-	}
-
-	@Override
 	public String toString() {
 		return "GenericArgument{" +
 				"name='" + this.name + '\'' +
 				", value='" + this.value + '\'' +
 				'}';
+	}
+
+	@Override
+	public int hashCode() {
+		int result = this.name.hashCode();
+		result = 31 * result + this.value.hashCode();
+		return result;
 	}
 
 	@NotNull

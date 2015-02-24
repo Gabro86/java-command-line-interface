@@ -167,13 +167,18 @@ public class CommandParser {
 			 * The argument value can be omitted on boolean arguments (flags). A missing argument value on a boolean argument is
 			 * interpreted as the argument value "true".
 			 */
-			genericArgumentValue = genericArgument.getValue().trim();
-			if (genericArgumentValue.isEmpty() && definition.getValueClass().equals(Boolean.class)) {
-				genericArgumentValue = "true";
+			genericArgumentValue = genericArgument.getValue();
+			if (genericArgumentValue == null) {
+				parsedValue = null;
+			} else {
+				genericArgumentValue = genericArgumentValue.trim();
+				if (genericArgumentValue.isEmpty() && definition.getValueClass().equals(Boolean.class)) {
+					genericArgumentValue = "true";
+				}
+				argumentParser = definition.getParser();
+				parsedValue = argumentParser.parse(genericArgumentValue);
 			}
 
-			argumentParser = definition.getParser();
-			parsedValue = argumentParser.parse(genericArgumentValue);
 			typeSafeArgument = new Argument<>(definition, parsedValue);
 			typeSafeCommand.addArgument(typeSafeArgument);
 		}

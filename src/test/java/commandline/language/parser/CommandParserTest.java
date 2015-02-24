@@ -283,9 +283,9 @@ public class CommandParserTest {
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
 		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
-		commandBefore = new Command(commandDefinition);
 
 		argument = new Argument<>(argumentDefinition, "test-value");
+		commandBefore = new Command(commandDefinition);
 		commandBefore.addArgument(argument);
 
 		stringArguments = new String[] {"test-command"};
@@ -328,12 +328,57 @@ public class CommandParserTest {
 		commandDefinitions = new CommandDefinitionList();
 		commandDefinitions.add(commandDefinition);
 		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
-		commandBefore = new Command(commandDefinition);
 
 		argument = new Argument<>(argumentDefinition, "test-value");
+		commandBefore = new Command(commandDefinition);
 		commandBefore.addArgument(argument);
 
 		stringArguments = "test-command --test-key test-value -t test-value".split(" ");
+		parser = new CommandParser(new GnuCommandLineLanguage(), commandDefinitions);
+		commandAfter = parser.parse(stringArguments);
+		assertEquals(commandBefore, commandAfter);
+	}
+
+	@Test
+	public void testParse_ArgumentDefaultValueIsNull() throws Exception {
+		CommandParser parser;
+		CommandDefinitionList commandDefinitions;
+		String[] stringArguments;
+		CommandDefinitionBuilder commandDefinitionBuilder;
+		ArgumentDefinitionBuilder argumentDefinitionBuilder;
+		ArgumentDefinition argumentDefinition;
+		CommandDefinition commandDefinition;
+		Command commandBefore;
+		Command commandAfter;
+		Argument<String> argument;
+
+		argumentDefinitionBuilder = new ArgumentDefinitionBuilder();
+		argumentDefinitionBuilder.setLongName("test-key");
+		argumentDefinitionBuilder.setShortName("t");
+		argumentDefinitionBuilder.setDescription("This is a test argument.");
+		argumentDefinitionBuilder.setValueClass(String.class);
+		argumentDefinitionBuilder.setValidator(new DefaultArgumentValidator());
+		argumentDefinitionBuilder.setParser(new StringArgumentParser());
+		argumentDefinitionBuilder.setDefaultValue(null);
+		argumentDefinitionBuilder.setExamples(new String[] {"example"});
+		argumentDefinitionBuilder.setObligatory(false);
+		argumentDefinition = argumentDefinitionBuilder.create();
+
+		commandDefinitionBuilder = new CommandDefinitionBuilder();
+		commandDefinitionBuilder.setName("test-command");
+		commandDefinitionBuilder.setDescription("This is a test command description.");
+		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
+		commandDefinition = commandDefinitionBuilder.create();
+		commandDefinition.addArgumentDefinition(argumentDefinition);
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(commandDefinition);
+		commandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
+
+		argument = new Argument<>(argumentDefinition, null);
+		commandBefore = new Command(commandDefinition);
+		commandBefore.addArgument(argument);
+
+		stringArguments = new String[] {"test-command"};
 		parser = new CommandParser(new GnuCommandLineLanguage(), commandDefinitions);
 		commandAfter = parser.parse(stringArguments);
 		assertEquals(commandBefore, commandAfter);
