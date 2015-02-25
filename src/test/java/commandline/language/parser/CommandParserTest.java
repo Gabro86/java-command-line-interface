@@ -351,11 +351,26 @@ public class CommandParserTest {
 	@Test(expected = CommandParseException.class)
 	public void testParse_ArgumentIsNotDefined() throws Exception {
 		CommandParser parser;
+		CommandDefinitionList commandDefinitions;
 		String[] cliCommandArguments;
+		CommandDefinitionBuilder commandDefinitionBuilder;
+		CommandDefinition commandDefinition;
+		Command commandBefore;
+		Command commandAfter;
 
+		commandDefinitionBuilder = new CommandDefinitionBuilder();
+		commandDefinitionBuilder.setName("test-command");
+		commandDefinitionBuilder.setDescription("This is a test command description.");
+		commandDefinitionBuilder.setCommandToExecute(new MockExecutableCommand());
+		commandDefinition = commandDefinitionBuilder.create();
+		commandDefinitions = new CommandDefinitionList();
+		commandDefinitions.add(commandDefinition);
+
+		commandBefore = new Command(commandDefinition);
 		cliCommandArguments = "test-command --test-key test-value".split(" ");
-		parser = new CommandParser(new GnuCommandLineLanguage(), new CommandDefinitionList());
-		parser.parse(cliCommandArguments);
+		parser = new CommandParser(new GnuCommandLineLanguage(), commandDefinitions);
+		commandAfter = parser.parse(cliCommandArguments);
+		assertEquals(commandBefore, commandAfter);
 	}
 
 	@Test(expected = CommandParseException.class)
@@ -532,7 +547,7 @@ public class CommandParserTest {
 		parser.parse(cliCommandArguments);
 	}
 
-	@Test(expected = CommandParseException.class)
+	@Test(expected = CommandNotFoundException.class)
 	public void testParse_CommandNotDefined() throws Exception {
 		CommandParser parser;
 		String[] cliCommandArguments;
