@@ -7,9 +7,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public class CommandDefinitionList {
+public class CommandDefinitionList implements Iterable<CommandDefinition> {
 	@NotNull
 	private final HashMap<String, CommandDefinition> commands;
 
@@ -129,5 +130,10 @@ public class CommandDefinitionList {
 	@Override
 	public int hashCode() {
 		return this.commands.hashCode();
+	}
+
+	@Override
+	public Iterator<CommandDefinition> iterator() {
+		return getCommands().values().iterator();
 	}
 }

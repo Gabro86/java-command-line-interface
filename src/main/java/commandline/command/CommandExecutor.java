@@ -3,6 +3,7 @@ package commandline.command;
 import commandline.command.help.HelpExecutableCommand;
 import commandline.exception.ArgumentNullException;
 import commandline.language.CommandLineLanguage;
+import commandline.language.parser.CommandNotFoundException;
 import commandline.language.parser.CommandParser;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,8 @@ public class CommandExecutor {
 		Command command;
 		CommandParser commandParser;
 		CommandDefinitionList editCommandDefinitions;
+		String similarCommandsString;
+		String message;
 
 		if (cliArguments == null) {
 			throw new ArgumentNullException();
@@ -42,7 +45,16 @@ public class CommandExecutor {
 		editCommandDefinitions.add(HelpExecutableCommand.readDefinitionFromAnnotations(commandDefinitions));
 
 		commandParser = new CommandParser(getCommandLineLanguage(), editCommandDefinitions);
-		command = commandParser.parse(cliArguments);
+		try {
+			command = commandParser.parse(cliArguments);
+		} catch (CommandNotFoundException e) {
+			message = "The command \"" + e.getCommandName() + "\" is not defined.";
+			similarCommandsString = createSimilarCommandsString(editCommandDefinitions, e.getCommandName());
+			if (!similarCommandsString.isEmpty()) {
+				message += " Did you mean: " + similarCommandsString;
+			}
+			throw new CommandNotFoundException(message, e, e.getCommandName());
+		}
 		command.execute();
 
 		return command;
@@ -71,5 +83,27 @@ public class CommandExecutor {
 		command = execute(cliArguments, definitions);
 
 		return command;
+	}
+
+	private String createSimilarCommandsString(CommandDefinitionList editCommandDefinitions, String commandName) {
+		SimilarCommandFinder similarCommandFinder;
+		List<CommandDefinition> similarDefinitions;
+		StringBuilder similarDefinitionsBuilder;
+
+		if (commandName == null) {
+			throw new ArgumentNullException();
+		}
+		similarCommandFinder = new SimilarCommandFinder(editCommandDefinitions);
+		similarDefinitions = similarCommandFinder.findSimilarCommands(commandName);
+		similarDefinitionsBuilder = new StringBuilder();
+		for (CommandDefinition definition : similarDefinitions) {
+			similarDefinitionsBuilder.append(definition.getName());
+			similarDefinitionsBuilder.append(", ");
+		}
+		if (similarDefinitionsBuilder.length() > 0) {
+			similarDefinitionsBuilder.setLength(similarDefinitionsBuilder.length() - ", ".length());
+		}
+
+		return similarDefinitionsBuilder.toString().trim();
 	}
 }

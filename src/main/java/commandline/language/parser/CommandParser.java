@@ -77,8 +77,8 @@ public class CommandParser {
 		 */
 		commandDefinition = getCommandDefinitions().get(commandName);
 		if (commandDefinition == null) {
-			throw new CommandParseException("The cli command \"" + commandName + "\" could not been parsed, because the " +
-					"corresponding command definition was not found.");
+			throw new CommandNotFoundException("The cli command \"" + commandName + "\" could not been parsed, because the " +
+					"corresponding command definition was not found.", commandName);
 		}
 
 		/*
