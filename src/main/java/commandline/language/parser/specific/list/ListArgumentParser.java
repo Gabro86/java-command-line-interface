@@ -27,7 +27,7 @@ public class ListArgumentParser<ListEntryType> extends ArgumentParser<List<ListE
 	}
 
 	@Override
-	public boolean isParsedValueClassCompatible(@NotNull Class<?> valueClass) {
+	public boolean isCompatibleWithOutputClass(@NotNull Class<?> valueClass) {
 		return valueClass.isAssignableFrom(List.class);
 	}
 

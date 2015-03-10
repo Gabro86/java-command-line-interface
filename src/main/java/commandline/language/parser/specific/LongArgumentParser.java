@@ -14,7 +14,7 @@ public class LongArgumentParser extends ArgumentParser<Long> {
 	}
 
 	@Override
-	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
+	public boolean isCompatibleWithOutputClass(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(long.class) || clazz.isAssignableFrom(Long.class);
 	}
 

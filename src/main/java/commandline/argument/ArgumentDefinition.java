@@ -78,7 +78,7 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		if (parser == null) {
 			throw new ArgumentNullException();
 		}
-		if (!parser.isParsedValueClassCompatible(valueClass)) {
+		if (!parser.isCompatibleWithOutputClass(valueClass)) {
 			throw new IllegalArgumentException("The argument definition could not been created, because the passed " +
 					"parser \"" + parser.getClass() + "\" is not compatible with the passed value class \"" + valueClass + "\"");
 		}

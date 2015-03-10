@@ -16,7 +16,7 @@ public class UrlArgumentParser extends ArgumentParser<URL> {
 	}
 
 	@Override
-	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
+	public boolean isCompatibleWithOutputClass(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(URL.class);
 	}
 

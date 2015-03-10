@@ -14,7 +14,7 @@ public class BooleanArgumentParser extends ArgumentParser<Boolean> {
 	}
 
 	@Override
-	public boolean isParsedValueClassCompatible(@NotNull Class<?> clazz) {
+	public boolean isCompatibleWithOutputClass(@NotNull Class<?> clazz) {
 		return clazz.isAssignableFrom(boolean.class) || clazz.isAssignableFrom(Boolean.class);
 	}
 
