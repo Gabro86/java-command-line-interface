@@ -21,7 +21,7 @@ public class OverriddenAnnotationsTestCommand extends ExecutableCommand {
 
 	@CliArgument(shortName = ARGUMENT_HELP_SHORT_NAME, longName = ARGUMENT_OVERRIDDEN_LONG_NAME,
 			obligatory = ARGUMENT_HELP_OBLIGATORY,
-			defaultValue = ARGUMENT_HELP_DEFAULT_VALUE, examples = {ARGUMENT_HELP_EXAMPLE1, ARGUMENT_HELP_EXAMPLE2},
+			defaultValue = ARGUMENT_HELP_DEFAULT_VALUE, examples = {ARGUMENT_HELP_EXAMPLE},
 			description = ARGUMENT_HELP_DESCRIPTION)
 	@Override
 	public void setShowHelp(boolean showHelp) {

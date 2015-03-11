@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ExecutableCommand {
 	public static final String ARGUMENT_HELP_SHORT_NAME = "h";
 	public static final String ARGUMENT_HELP_LONG_NAME = "help";
-	public static final String ARGUMENT_HELP_DESCRIPTION = "Shows the help for this command.";
+	public static final String ARGUMENT_HELP_DESCRIPTION = "Shows the help for this command";
 	public static final boolean ARGUMENT_HELP_OBLIGATORY = false;
 	public static final String ARGUMENT_HELP_DEFAULT_VALUE = "false";
 	public static final Class<BooleanArgumentParser> ARGUMENT_PARSER_CLASS = BooleanArgumentParser.class;
@@ -21,9 +21,8 @@ public abstract class ExecutableCommand {
 	public static final Class<DefaultArgumentValidator> ARGUMENT_VALIDATOR_CLASS = DefaultArgumentValidator.class;
 	public static final DefaultArgumentValidator ARGUMENT_VALIDATOR = new DefaultArgumentValidator();
 	public static final Class<Boolean> ARGUMENT_VALUE_CLASS = Boolean.class;
-	public static final String ARGUMENT_HELP_EXAMPLE1 = "false";
-	public static final String ARGUMENT_HELP_EXAMPLE2 = "true";
-	public static final String[] ARGUMENT_HELP_EXAMPLES = new String[] {ARGUMENT_HELP_EXAMPLE1, ARGUMENT_HELP_EXAMPLE2};
+	public static final String ARGUMENT_HELP_EXAMPLE = "true";
+	public static final String[] ARGUMENT_HELP_EXAMPLES = new String[] {ARGUMENT_HELP_EXAMPLE};
 
 	private boolean showHelp;
 
@@ -39,7 +38,7 @@ public abstract class ExecutableCommand {
 	@CliArgument(shortName = ARGUMENT_HELP_SHORT_NAME, longName = ARGUMENT_HELP_LONG_NAME,
 			obligatory = ARGUMENT_HELP_OBLIGATORY,
 			defaultValue = ARGUMENT_HELP_DEFAULT_VALUE,
-			examples = {ARGUMENT_HELP_EXAMPLE1, ARGUMENT_HELP_EXAMPLE2},
+			examples = {ARGUMENT_HELP_EXAMPLE},
 			description = ARGUMENT_HELP_DESCRIPTION)
 	public void setShowHelp(boolean showHelp) {
 		this.showHelp = showHelp;

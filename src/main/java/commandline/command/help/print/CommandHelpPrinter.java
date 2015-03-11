@@ -7,8 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.Table;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,16 +62,41 @@ public class CommandHelpPrinter extends HelpPrinter {
 		for (ArgumentDefinition argument : arguments) {
 			table.addCell(createLongNameString(argument));
 			table.addCell(createShortNameString(argument));
-			table.addCell(argument.getValueClass().getSimpleName());
+			table.addCell(getArgumentValueTypeName(argument.getValueClass()));
 			table.addCell(String.valueOf(argument.isObligatory()));
 			if (argument.getDefaultValue() == null) {
 				table.addCell("<none>");
+			} else if (argument.getDefaultValue().isEmpty()) {
+				table.addCell("<empty-string>");
 			} else {
 				table.addCell(argument.getDefaultValue());
 			}
 		}
 
 		return table;
+	}
+
+	private String getArgumentValueTypeName(Class<?> clazz) {
+		String className;
+
+		if (clazz == null) {
+			throw new ArgumentNullException();
+		}
+		if (clazz.equals(String.class) || clazz.equals(Short.class) || clazz.equals(short.class) || clazz.equals(Integer.class) ||
+				clazz.equals(int.class) || clazz.equals(Long.class) || clazz.equals(long.class) || clazz.equals(Character.class) ||
+				clazz.equals(char.class) || clazz.equals(Boolean.class) || clazz.equals(boolean.class) || clazz.equals(Float.class) ||
+				clazz.equals(float.class) || clazz.equals(Double.class) || clazz.equals(double.class) ||
+				clazz.equals(File.class) || (clazz.equals(URL.class))) {
+			className = clazz.getSimpleName();
+		} else {
+			/*
+			 * The class names of custom classes are hidden from the user, because it's of no use for the user to see the class name
+			 * custom classes. Instead of the class name "String" is printed to the terminal.
+			 */
+			className = "String";
+		}
+
+		return className;
 	}
 
 	@NotNull

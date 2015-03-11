@@ -20,10 +20,10 @@ import org.jetbrains.annotations.Nullable;
 @CliCommand(name = HelpExecutableCommand.COMMAND_NAME, description = HelpExecutableCommand.COMMAND_DESCRIPTION)
 public class HelpExecutableCommand extends ExecutableCommand {
 	public static final String COMMAND_NAME = "help";
-	public static final String COMMAND_DESCRIPTION = "Shows the applications help.";
+	public static final String COMMAND_DESCRIPTION = "Shows the applications help";
 	public static final String ARGUMENT_COMMAND_NAME_SHORT_NAME = "c";
 	public static final String ARGUMENT_COMMAND_NAME_LONG_NAME = "command";
-	public static final String ARGUMENT_COMMAND_NAME_DESCRIPTION = "The command to show the help for.";
+	public static final String ARGUMENT_COMMAND_NAME_DESCRIPTION = "The command to show the help for";
 	public static final boolean ARGUMENT_COMMAND_NAME_OBLIGATORY = false;
 	public static final String ARGUMENT_COMMAND_NAME_DEFAULT_VALUE = null;
 	public static final Class<StringArgumentParser> ARGUMENT_COMMAND_NAME_PARSER_CLASS = StringArgumentParser.class;

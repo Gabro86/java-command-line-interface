@@ -121,7 +121,7 @@ public class CommandParser {
 			argumentDefinition = commandDefinition.getArgumentDefinition(argumentName);
 			if (argumentDefinition == null) {
 				throw new CommandParseException("The cli command \"" + commandName + "\" could not been parsed, because the cli " +
-						"arguments contain the invalid argument \"" + argumentName + "\" that is not defined for the command");
+						"arguments contain the invalid argument \"" + argumentName + "\" that is not defined for the command.");
 			}
 		}
 
