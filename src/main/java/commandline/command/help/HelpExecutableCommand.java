@@ -120,10 +120,6 @@ public class HelpExecutableCommand extends ExecutableCommand {
 				"} " + super.toString();
 	}
 
-	public static String getCommandName() {
-		return COMMAND_NAME;
-	}
-
 	public static CommandDefinition readDefinitionFromAnnotations(CommandDefinitionList commandsToShowHelpFor) {
 		CommandDefinitionReader reader;
 		CommandDefinition commandDefinition;
