@@ -330,7 +330,7 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		String message;
 
 		editShortName = shortName;
-		if (editShortName != null) {
+		if (editShortName != null && !editShortName.equals(CliArgument.nullValue)) {
 			editShortName = editShortName.trim();
 			if (editShortName.isEmpty()) {
 				message = "The short name could not been processed, because the passed short name doesn't contain any character.";
