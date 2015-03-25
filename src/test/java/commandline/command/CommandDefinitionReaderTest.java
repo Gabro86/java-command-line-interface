@@ -1,7 +1,6 @@
 package commandline.command;
 
 import commandline.annotation.CliArgument;
-import commandline.annotation.CommandLineAnnotationException;
 import commandline.argument.ArgumentDefinition;
 import commandline.argument.ArgumentDefinitionTest;
 import commandline.command.mock.DuplicateLongNameTestCommand;
@@ -115,7 +114,7 @@ public class CommandDefinitionReaderTest {
 		assertEquals(testArgumentName, testArgumentDefinition.getLongName());
 	}
 
-	@Test(expected = CommandLineAnnotationException.class)
+	@Test(expected = CommandLineException.class)
 	public void testReadCommandDefinition_NoCliCommandAnnotation() {
 		CommandDefinitionReader reader;
 

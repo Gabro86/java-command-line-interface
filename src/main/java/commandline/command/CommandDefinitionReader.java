@@ -2,7 +2,6 @@ package commandline.command;
 
 import commandline.annotation.CliArgument;
 import commandline.annotation.CliCommand;
-import commandline.annotation.CommandLineAnnotationException;
 import commandline.argument.ArgumentDefinition;
 import commandline.exception.ArgumentNullException;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +43,7 @@ public class CommandDefinitionReader {
 		}
 		clazz = commandToExecute.getClass();
 		if (!hasCommandDefinition(commandToExecute)) {
-			throw new CommandLineAnnotationException("The command definition could not been read, because the passed " +
+			throw new CommandLineException("The command definition could not been read, because the passed " +
 					"class \"" + clazz.getSimpleName() + "\" doesn't have the annotation " +
 					CliCommand.class.getSimpleName());
 		}
