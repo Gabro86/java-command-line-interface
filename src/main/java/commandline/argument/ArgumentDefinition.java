@@ -25,31 +25,88 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+/**
+ * This class represents a command line argument definition. It defines the most important fields of a command line argument.
+ */
 public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
+	/**
+	 * The short name of the command line argument. The short name is exactly one character long. It can be used by the user
+	 * instead of
+	 * the long name. This is a convenience to save time when entering the command.
+	 */
 	@Nullable
 	private final String shortName;
+	/**
+	 * The long name of the command line argument. The short name is exactly one character long. It can be used instead of the long
+	 * name. This is a convenience to save time when entering the command.
+	 */
 	@NotNull
 	private final String longName;
+	/**
+	 * The class of the value of the command line argument.
+	 */
 	@NotNull
 	private final Class<?> valueClass;
+	/**
+	 * The parser class to use to parse the string argument value. The parser parses the string value and converts it into the type
+	 * needed by the command line argument
+	 */
 	@NotNull
 	private final ArgumentParser<?> parser;
+	/**
+	 * The validator class to use to validate the argument value after is has been parsed.
+	 */
 	@NotNull
 	private final ArgumentValidator<?> validator;
+	/**
+	 * Defines if the command line argument is obligatory or optional. If the argument is optional the user doesn't need to pass it to
+	 * the command line and a default value will be used.
+	 */
 	private final boolean obligatory;
+	/**
+	 * The default value to use when the command line argument is optional and no argument value was passed.
+	 */
 	@Nullable
 	private final String defaultValue;
+	/**
+	 * The description to show in the help of the command line interface.
+	 */
 	@NotNull
 	private final String description;
+	/**
+	 * The example argument values to show in the help of the command line interface.
+	 */
 	@NotNull
 	private final String[] examples;
 
+	/**
+	 * Creates a command line argument definition instance using the data of an {@link commandline.annotation.CliArgument} annotation
+	 * instance.
+	 * @param definition The {@link commandline.annotation.CliArgument} annotation instance containing the fields for the argument
+	 * definition.
+	 * @param valueClass The class of the value of the command line argument.
+	 */
 	public ArgumentDefinition(@NotNull CliArgument definition, @NotNull Class<?> valueClass) {
 		this(definition.longName(), definition.shortName(), valueClass, createCompatibleParser(definition.parser(), valueClass),
 				createValidator(definition.validator()), definition.obligatory(), getDefaultValueFromAnnotation(definition),
 				definition.description(), definition.examples());
 	}
 
+	/**
+	 * Creates a command line argument definition instance.
+	 * @param longName The long name of the command line argument.
+	 * @param shortName The short name of the command line argument. The short name is exactly one character long. It can be used by
+	 * the user instead of the long name. This is a convenience to save time when entering the command.
+	 * @param valueClass The class of the value of the argument definition.
+	 * @param parser The parser class to use to parse the string argument value passed by the user. The parser parses the string value
+	 * and converts	it into the class needed by the command line argument.
+	 * @param validator The validator class to use to validate the argument value after is has been parsed.
+	 * @param obligatory Defines if the command line argument is obligatory or optional. If the argument is optional and no argument
+	 * value was passed a default value will be used.
+	 * @param defaultValue The default value to use when the command line argument is optional and no argument value was passed.
+	 * @param description The description to show in the help of the command line interface.
+	 * @param examples The example argument values to show in the help of the command line interface.
+	 */
 	public ArgumentDefinition(@NotNull String longName, @NotNull String shortName, @NotNull Class<?> valueClass,
 			@NotNull ArgumentParser<?> parser, @NotNull ArgumentValidator<?> validator, boolean obligatory,
 			@Nullable String defaultValue, @NotNull String description, @NotNull String[] examples) {
@@ -119,50 +176,86 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		this.examples = processExamples(examples);
 	}
 
+	/**
+	 * @return Returns the long name.
+	 */
 	@NotNull
 	public String getLongName() {
 		return this.longName;
 	}
 
+	/**
+	 * @return Returns the short name
+	 */
 	@Nullable
 	public String getShortName() {
 		return this.shortName;
 	}
 
+	/**
+	 * @return Returns the class of the values of this command line argument.
+	 */
 	@NotNull
 	public Class<?> getValueClass() {
 		return this.valueClass;
 	}
 
+	/**
+	 * @return Returns the parser to use to parse the string argument value passed throw the command line interface.
+	 */
 	@NotNull
 	public ArgumentParser<?> getParser() {
 		return this.parser;
 	}
 
+	/**
+	 * @return Returns the validator class to use to validate the argument value after is has been parsed.
+	 */
 	@NotNull
 	public ArgumentValidator<?> getValidator() {
 		return this.validator;
 	}
 
+	/**
+	 * Defines if this argument must be passed throw command line.
+	 * @return Returns true if this command line argument is obligatory and otherwise false.
+	 */
 	public boolean isObligatory() {
 		return this.obligatory;
 	}
 
+	/**
+	 * Returns the default value to use when the command line argument is optional and no argument value was passed.
+	 * @return Returns the default value or null if no default value is set.
+	 */
 	@Nullable
 	public String getDefaultValue() {
 		return this.defaultValue;
 	}
 
+	/**
+	 * @return Returns the description to show in the help of the command line interface for this command line argument.
+	 */
 	@NotNull
 	public String getDescription() {
 		return this.description;
 	}
 
+	/**
+	 * @return Returns the example values to show in the help of the command line interface for this command line argument.
+	 */
 	@NotNull
 	public String[] getExamples() {
 		return this.examples;
 	}
 
+	/**
+	 * Compares this argument definition instance with another.
+	 * @param definition The argument definition that should be compared with this instance.
+	 * @return <p>Returns 0 if the argument definition names are equal.</p><p>Returns a value less than 0 if this argument definition
+	 * name is lexicographically less than the name of the passed argument definition.</p><p>Returns a value greater than 0 if this
+	 * argument definition name is lexicographically greater than the name of the passed argument definition.</p>
+	 */
 	@Override
 	public int compareTo(@NotNull ArgumentDefinition definition) {
 		if (definition == null) {
@@ -171,6 +264,9 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return getLongName().compareTo(definition.getLongName());
 	}
 
+	/**
+	 * Returns a string representing this argument definition instance.
+	 */
 	@Override
 	public String toString() {
 		return "ArgumentDefinition{" +
@@ -186,8 +282,9 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 				'}';
 	}
 
-	/*
-	 * This equals method was modified
+	/**
+	 * Compares this argument definition instance with another. <b>This equals method was modified don't generate a new method without
+	 * porting the changes made to the new method.</b>
 	 */
 	@Override
 	public boolean equals(Object o) {
@@ -231,8 +328,9 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return true;
 	}
 
-	/*
-	 * This equals method was modified
+	/**
+	 * Calculates an hash code for this argument definition instance. <b>This equals method was modified don't generate a new method
+	 * without porting the changes made to the new method.</b>
 	 */
 	@Override
 	public int hashCode() {
@@ -248,6 +346,11 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return result;
 	}
 
+	/**
+	 * Validates and cleans argument definition examples.
+	 * @param examples The examples of an argument definition to validate and clean.
+	 * @return Returns the validated and cleaned argument definition examples.
+	 */
 	@NotNull
 	static String[] processExamples(@NotNull String[] examples) {
 		LinkedList<String> processedExamples;
@@ -277,6 +380,14 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return processedExamples.toArray(new String[examples.length]);
 	}
 
+	/**
+	 * Creates an instance of a parser that is capable of parsing a string argument value and converting it into the class passed to
+	 * this method.
+	 * @param parserClass The class of the parser that should be created. If MockArgumentParser.class is passed the method will search
+	 * for compatible parser.
+	 * @param valueClass The class of the value the parser should return as result.
+	 * @return Returns the parser instance that is compatible with the passed value class.
+	 */
 	static ArgumentParser<?> createCompatibleParser(Class<? extends ArgumentParser<?>> parserClass, Class<?> valueClass) {
 		Class<? extends ArgumentParser<?>> compatibleParserClass;
 		String message;
@@ -309,6 +420,11 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return parser;
 	}
 
+	/**
+	 * Creates a validator instance of the passed class.
+	 * @param validatorClass The class of the validator instance that should be created.
+	 * @return Returns a validator instance.
+	 */
 	static ArgumentValidator<?> createValidator(Class<? extends ArgumentValidator<?>> validatorClass) {
 		ArgumentValidator<?> validator;
 
@@ -324,6 +440,11 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return validator;
 	}
 
+	/**
+	 * Validates and cleans a short name
+	 * @param shortName The short name to validate and clean.
+	 * @return Returns a validated and cleaned short name.
+	 */
 	@Nullable
 	static String processShortName(@Nullable String shortName) {
 		String editShortName;
@@ -345,6 +466,11 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return editShortName;
 	}
 
+	/**
+	 * Searches for a parser class that is capable of parsing a string and converting it into the class passed to this method.
+	 * @param classToParse The class of the value the parser should return as result.
+	 * @return Returns a parser class that is compatible with the passed class or null if no compatible parser class is available.
+	 */
 	@Nullable
 	static Class<? extends ArgumentParser<?>> findCompatibleParser(@NotNull Class<?> classToParse) {
 		Class<? extends ArgumentParser<?>> parserClass;
@@ -379,6 +505,11 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return parserClass;
 	}
 
+	/**
+	 * Extracts the default value from a {@link commandline.annotation.CliArgument} instance.
+	 * @param annotation The {@link commandline.annotation.CliArgument} instance containing the default value to be extracted.
+	 * @return Returns the extracted default value.
+	 */
 	@Nullable
 	static String getDefaultValueFromAnnotation(@NotNull CliArgument annotation) {
 		String defaultValue;
@@ -397,6 +528,10 @@ public class ArgumentDefinition implements Comparable<ArgumentDefinition> {
 		return value;
 	}
 
+	/**
+	 * Creates a mock argument definition instance.
+	 * @return Returns a new mock argument definition instance.
+	 */
 	@NotNull
 	public static ArgumentDefinition createMock() {
 		return new ArgumentDefinition("test-argument", "t", String.class, new StringArgumentParser(), new DefaultArgumentValidator(),

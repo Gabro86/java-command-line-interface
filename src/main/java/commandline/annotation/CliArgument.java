@@ -24,7 +24,7 @@ public @interface CliArgument {
 	String nullValue = "null-value-4bc850d9f16c4db588333495b089d04a70bdc00a4abc462a877278762a4e3b2d";
 	/**
 	 * Defines the short name of the command line argument. The short name is exactly one character long. It can be used by the user
-	 * instead of the long name. This saves time when entering the command. <p>This field is optional.</p>
+	 * instead of the long name. This is a convenience to save time when entering the command.<p>This field is optional.</p>
 	 * @return Returns the short name of the command line argument
 	 */
 	String shortName() default nullValue;
@@ -57,7 +57,8 @@ public @interface CliArgument {
 	 */
 	Class<? extends ArgumentParser<?>> parser() default MockArgumentParser.class;
 	/**
-	 * Defines the validator class to use to validate the argument value passed by the user. <p>This field is optional.</p>
+	 * Defines the validator class to use to validate the argument value passed by the user after it has been parsed. <p>This field is
+	 * optional.</p>
 	 * @return Returns the validator class to use to validate the command line argument value.
 	 */
 	Class<? extends ArgumentValidator<?>> validator() default DefaultArgumentValidator.class;
